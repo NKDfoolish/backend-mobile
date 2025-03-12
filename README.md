@@ -1,4 +1,4 @@
-**1. Prerequisite**
+# 1. Prerequisite
 
 Cài đặt JDK 17+ nếu chưa thì cài đặt JDK
 
@@ -8,7 +8,7 @@ Install IntelliJ nếu chưa thì cài đặt IntelliJ
 
 Install Docker nếu chưa thì cài đặt Docker
 
-**2. Technical Stacks**
+# 2. Technical Stacks
 
 Java 17
 
@@ -33,7 +33,7 @@ Docker compose
 …
 
 
-**3. Build & Run Application**
+# 3. Build & Run Application
 
 – Run application bởi mvnw tại folder backend-service
 
@@ -50,7 +50,7 @@ Docker compose
 
 
 
-**4. Test**
+# 4. Test
 
 – Check health với cURL
 
