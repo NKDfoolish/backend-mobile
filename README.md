@@ -1,3 +1,5 @@
+![Mô tả ảnh](https://repository-images.githubusercontent.com/149085612/76e31b00-782c-11e9-8fdc-eec6e93d055b)
+
 # 1. Prerequisite
 
 Cài đặt JDK 17+ nếu chưa thì cài đặt JDK
