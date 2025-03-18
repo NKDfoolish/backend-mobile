@@ -8,6 +8,7 @@ import com.myproject.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +22,7 @@ import java.util.Map;
 @RequestMapping("/user")
 @Tag(name = "User Controller", description = "User Controller")
 @RequiredArgsConstructor
+@Slf4j(topic = "USER_CONTROLLER")
 public class UserController {
 
     private final UserService userService;
@@ -97,6 +99,9 @@ public class UserController {
     @Operation(summary = "Update user", description = "API update user by id")
     @PutMapping("/upd")
     public Map<String, Object> updateUser(@RequestBody UserUpdateRequest request) {
+        log.info("Update user {}", request);
+
+        userService.update(request);
 
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("status", HttpStatus.ACCEPTED.value());
@@ -109,6 +114,9 @@ public class UserController {
     @Operation(summary = "Change password", description = "API change password by id")
     @PatchMapping("/change-pwd")
     public Map<String, Object> changePassword(@RequestBody UserPasswordRequest request) {
+        log.info("Change password {}", request);
+
+        userService.changePassword(request);
 
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("status", HttpStatus.NO_CONTENT.value());
@@ -119,8 +127,11 @@ public class UserController {
     }
 
     @Operation(summary = "Delete user", description = "API delete user by id")
-    @DeleteMapping("/{userId}/del")
+    @DeleteMapping("/del/{userId}")
     public Map<String, Object> deleteUser(@PathVariable Long userId) {
+        log.info("Delete user {}", userId);
+
+        userService.delete(userId);
 
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("status", HttpStatus.RESET_CONTENT.value());

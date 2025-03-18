@@ -19,7 +19,7 @@ public interface UserService {
 
     long save(UserCreationRequest req);
 
-    int update(UserUpdateRequest req);
+    void update(UserUpdateRequest req);
 
     void changePassword(UserPasswordRequest req);
 
