@@ -76,7 +76,7 @@ public class UserServiceImpl implements UserService {
                 addressEntity.setFloor(address.getFloor());
                 addressEntity.setBuilding(address.getBuilding());
                 addressEntity.setAddressType(address.getAddressType());
-                addressEntity.setUser(user);
+                addressEntity.setUserId(user.getId());
                 addresses.add(addressEntity);
             });
 

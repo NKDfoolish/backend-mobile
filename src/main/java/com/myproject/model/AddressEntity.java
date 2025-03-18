@@ -42,9 +42,8 @@ public class AddressEntity {
     @Column(name = "address_type")
     private Integer addressType;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private UserEntity user;
+    @Column(name = "user_id")
+    private Long userId;
 
     @Column(name = "created_at", length = 255)
     @Temporal(TemporalType.TIMESTAMP)
