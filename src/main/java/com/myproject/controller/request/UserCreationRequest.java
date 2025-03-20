@@ -4,12 +4,14 @@ import com.myproject.common.Gender;
 import com.myproject.common.UserType;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 @Getter
+@ToString
 public class UserCreationRequest implements Serializable {
     private String firstName;
     private String lastName;

@@ -1,5 +1,6 @@
 package com.myproject.controller;
 
+import com.myproject.common.Gender;
 import com.myproject.controller.request.UserCreationRequest;
 import com.myproject.controller.request.UserPasswordRequest;
 import com.myproject.controller.request.UserUpdateRequest;
@@ -31,8 +32,8 @@ public class MockupUserController {
         userResponse1.setLastName("Doe");
         userResponse1.setEmail("John@gmail.com");
         userResponse1.setPhone("123321123321");
-        userResponse1.setBirthDate(new Date());
-        userResponse1.setGender("M");
+        userResponse1.setBirthday(new Date());
+        userResponse1.setGender(Gender.MALE);
         userResponse1.setUsername("johndoe");
 
         UserResponse userResponse2 = new UserResponse();
@@ -41,8 +42,8 @@ public class MockupUserController {
         userResponse2.setLastName("Doe");
         userResponse2.setEmail("jane@gmail.com");
         userResponse2.setPhone("123321123321");
-        userResponse2.setBirthDate(new Date());
-        userResponse2.setGender("F");
+        userResponse2.setBirthday(new Date());
+        userResponse2.setGender(Gender.FEMALE);
         userResponse2.setUsername("janedoe");
 
         List<UserResponse> userResponses = List.of(userResponse1, userResponse2);
@@ -64,8 +65,8 @@ public class MockupUserController {
         userResponse.setLastName("Doe");
         userResponse.setEmail("John@gmail.com");
         userResponse.setPhone("123321123321");
-        userResponse.setBirthDate(new Date());
-        userResponse.setGender("M");
+        userResponse.setBirthday(new Date());
+        userResponse.setGender(Gender.MALE);
         userResponse.setUsername("johndoe");
 
         Map<String, Object> result = new LinkedHashMap<>();

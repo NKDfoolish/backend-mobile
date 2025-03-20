@@ -3,13 +3,14 @@ package com.myproject.service;
 import com.myproject.controller.request.UserCreationRequest;
 import com.myproject.controller.request.UserPasswordRequest;
 import com.myproject.controller.request.UserUpdateRequest;
+import com.myproject.controller.response.UserPageResponse;
 import com.myproject.controller.response.UserResponse;
 
 import java.util.List;
 
 public interface UserService {
 
-    List<UserResponse> findAll();
+    UserPageResponse findAll(String keyword, String sort, int page, int size);
 
     UserResponse findById(Long id);
 

@@ -13,9 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -30,35 +28,16 @@ public class UserController {
     @Operation(summary = "Get list user", description = "API retrieve list of user")
     @GetMapping("/list")
     public Map<String, Object> getList(@RequestParam(required = false) String keyword,
-                                       @RequestParam(defaultValue = "0") int page,
-                                       @RequestParam(defaultValue = "20") int size) {
+                                    @RequestParam(required = false) String sort,
+                                    @RequestParam(defaultValue = "0") int page,
+                                    @RequestParam(defaultValue = "20") int size) {
 
-        UserResponse userResponse1 = new UserResponse();
-        userResponse1.setId(1L);
-        userResponse1.setFirstName("John");
-        userResponse1.setLastName("Doe");
-        userResponse1.setEmail("John@gmail.com");
-        userResponse1.setPhone("123321123321");
-        userResponse1.setBirthDate(new Date());
-        userResponse1.setGender("M");
-        userResponse1.setUsername("johndoe");
-
-        UserResponse userResponse2 = new UserResponse();
-        userResponse2.setId(2L);
-        userResponse2.setFirstName("Jane");
-        userResponse2.setLastName("Doe");
-        userResponse2.setEmail("jane@gmail.com");
-        userResponse2.setPhone("123321123321");
-        userResponse2.setBirthDate(new Date());
-        userResponse2.setGender("F");
-        userResponse2.setUsername("janedoe");
-
-        List<UserResponse> userResponses = List.of(userResponse1, userResponse2);
+        log.info("Get list user");
 
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("status", HttpStatus.OK.value());
         result.put("message", "Success");
-        result.put("data", userResponses);
+        result.put("data", userService.findAll(keyword, sort, page, size));
 
         return result;
     }
@@ -66,15 +45,9 @@ public class UserController {
     @Operation(summary = "Get user detail", description = "API retrieve user detail by id")
     @GetMapping("/{userId}")
     public Map<String, Object> getUserDetail(@PathVariable Long userId) {
-        UserResponse userResponse = new UserResponse();
-        userResponse.setId(1L);
-        userResponse.setFirstName("John");
-        userResponse.setLastName("Doe");
-        userResponse.setEmail("John@gmail.com");
-        userResponse.setPhone("123321123321");
-        userResponse.setBirthDate(new Date());
-        userResponse.setGender("M");
-        userResponse.setUsername("johndoe");
+        log.info("Get user detail {}", userId);
+
+        UserResponse userResponse = userService.findById(userId);
 
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("status", HttpStatus.OK.value());
@@ -87,6 +60,7 @@ public class UserController {
     @Operation(summary = "Create user", description = "API create new user")
     @PostMapping("/add")
     public ResponseEntity<Object> createUser(@RequestBody UserCreationRequest request) {
+        log.info("Create user {}", request);
 
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("status", HttpStatus.CREATED.value());
