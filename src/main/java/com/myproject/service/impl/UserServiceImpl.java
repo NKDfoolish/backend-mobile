@@ -6,6 +6,7 @@ import com.myproject.controller.request.UserPasswordRequest;
 import com.myproject.controller.request.UserUpdateRequest;
 import com.myproject.controller.response.UserPageResponse;
 import com.myproject.controller.response.UserResponse;
+import com.myproject.exception.InvalidDataException;
 import com.myproject.exception.ResourceNotFoundException;
 import com.myproject.model.AddressEntity;
 import com.myproject.model.UserEntity;
@@ -109,6 +110,12 @@ public class UserServiceImpl implements UserService {
     @Transactional(rollbackFor = Exception.class)
     public long save(UserCreationRequest req) {
         log.info("Saving user: {}", req);
+
+        UserEntity userByEmail = userRepository.findByEmail(req.getEmail());
+        if (userByEmail != null) {
+            throw new InvalidDataException("Email already exists");
+        }
+
         UserEntity user = new UserEntity();
         user.setFirstName(req.getFirstName());
         user.setLastName(req.getLastName());
