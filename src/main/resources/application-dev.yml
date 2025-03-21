@@ -7,8 +7,8 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/postgres
-    username: khanhduy
-    password: khanhduy
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
   jpa:
     properties:
       hibernate:
@@ -16,6 +16,9 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: none
+  sendgrid:
+    apiKey: ${SENDGRID_API_KEY}
+    from-email: ${SENDGRID_FROM_EMAIL}
 
 # application-dev.yml
 springdoc:

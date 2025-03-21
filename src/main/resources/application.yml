@@ -2,6 +2,8 @@ server:
   port: 8080
 
 spring:
+  config:
+    import: file:.env[.properties]
   application:
     name: backend-service
   profiles:
@@ -17,3 +19,4 @@ logging:
   level:
     root: INFO
     web: INFO
+
