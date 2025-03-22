@@ -7,6 +7,7 @@ import com.myproject.controller.response.UserResponse;
 import com.myproject.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -59,6 +61,19 @@ public class UserController {
         result.put("data", userResponse);
 
         return result;
+    }
+
+    @GetMapping("/confirm-email")
+    public void confirmEmail(@RequestParam String secretCode, HttpServletResponse response) throws IOException {
+        log.info("Confirm email {}", secretCode);
+
+        try {
+            // TODO check or compare secretCode from db
+        } catch (Exception e) {
+            log.error("Error confirm email!, errorMessage={}", e.getMessage());
+        } finally {
+            response.sendRedirect("http://localhost:8080/login");
+        }
     }
 
     @Operation(summary = "Create user", description = "API create new user")
