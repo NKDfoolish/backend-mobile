@@ -56,7 +56,7 @@ public class CustomizerRequestFilter extends OncePerRequestFilter {
                 return;
             }
 
-            UserDetails userDetails = userServiceDetail.userDetailsService().loadUserByUsername(username);
+            UserDetails userDetails = userServiceDetail.loadUserByUsername(username);
 
             SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
