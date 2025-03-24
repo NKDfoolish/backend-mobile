@@ -36,8 +36,7 @@ openapi:
     version: 1.0.0
 
 jwt:
-  secretKey: abcd312
   expiryMinutes: 5
   expiryDays: 14
-  accessKey: TZTTPUsuYPp3E2st1zpO3X223a5tgSblqDaBPJGnD/Y=
-  refreshKey: 7TjZb0X7RmqfKXUJ5lU2FV2VaS2pNh3EkdOhLuJSFTg=
+  accessKey: ${JWT_ACCESS_SECRET}
+  refreshKey: ${JWT_REFRESH_SECRET}
