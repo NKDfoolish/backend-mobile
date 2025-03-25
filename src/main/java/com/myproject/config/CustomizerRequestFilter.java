@@ -15,6 +15,8 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,6 +30,7 @@ import java.util.Date;
 @Component
 @Slf4j(topic = "CUSTOMIZER_REQUEST_FILTER")
 @RequiredArgsConstructor
+@EnableMethodSecurity(prePostEnabled = true)
 public class CustomizerRequestFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
@@ -36,6 +39,8 @@ public class CustomizerRequestFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         log.info("{} {}",request.getMethod(), request.getRequestURI());
+
+        // TODO: check authority by request uri
 
         // TODO verify token
         String authHeader = request.getHeader("Authorization");
@@ -52,11 +57,12 @@ public class CustomizerRequestFilter extends OncePerRequestFilter {
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.setContentType("application/json");
                 response.setCharacterEncoding("UTF-8");
-                response.getWriter().write(errorResponse(e.getMessage()));
+                response.getWriter().write(errorResponse(request.getRequestURI(), e.getMessage()));
                 return;
             }
 
             UserDetails userDetails = userServiceDetail.loadUserByUsername(username);
+            userDetails.getAuthorities().forEach(authority -> log.info("Authority: {}", authority.getAuthority()));
 
             SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
@@ -75,11 +81,12 @@ public class CustomizerRequestFilter extends OncePerRequestFilter {
      * @param message
      * @return
      */
-    private String errorResponse(String message) {
+    private String errorResponse(String url, String message) {
         try {
             ErrorResponse error = new ErrorResponse();
             error.setTimestamp(new Date());
             error.setError("Forbidden");
+            error.setPath(url);
             error.setStatus(HttpServletResponse.SC_FORBIDDEN);
             error.setMessage(message);
 
@@ -95,6 +102,7 @@ public class CustomizerRequestFilter extends OncePerRequestFilter {
     private class ErrorResponse {
         private Date timestamp;
         private int status;
+        private String path;
         private String error;
         private String message;
     }

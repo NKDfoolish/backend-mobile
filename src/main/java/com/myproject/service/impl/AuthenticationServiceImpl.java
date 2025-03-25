@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -19,6 +21,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.myproject.common.TokenType.REFRESH_TOKEN;
 
@@ -35,22 +40,28 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public TokenResponse getAccessToken(SignInRequest request) {
         log.info("Get access token");
 
+        List<String> authorities = new ArrayList<>();
+
         try {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
 
+            log.info("isAuthentication: {}", authentication.isAuthenticated());
+            log.info("Authorities: {}", authentication.getAuthorities());
+            authorities.add(authentication.getAuthorities().toString());
+
             SecurityContextHolder.getContext().setAuthentication(authentication);
-        } catch (AuthenticationException e) {
+        } catch (BadCredentialsException | DisabledException e) {
             log.error("Login failed: {}", e.getMessage());
             throw new AccessDeniedException(e.getMessage());
         }
+//
+//        var user = userRepository.findByUsername(request.getUsername());
+//        if (user == null){
+//            throw new UsernameNotFoundException("User not found");
+//        }
 
-        var user = userRepository.findByUsername(request.getUsername());
-        if (user == null){
-            throw new UsernameNotFoundException("User not found");
-        }
-
-        String accessToken = jwtService.generateAccessToken(user.getId(), request.getUsername(), user.getAuthorities());
-        String refreshToken = jwtService.generateRefreshToken(user.getId(), request.getUsername(), user.getAuthorities());
+        String accessToken = jwtService.generateAccessToken(request.getUsername(), authorities);
+        String refreshToken = jwtService.generateRefreshToken(request.getUsername(), authorities);
 
         return TokenResponse.builder()
                 .accessToken(accessToken)
@@ -72,9 +83,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
             // check user is active or inactivated
             UserEntity user = userRepository.findByUsername(userName);
+            List<String> authorities = new ArrayList<>();
+            user.getAuthorities().forEach(authority -> authorities.add(authority.getAuthority()));
+
 
             // generate new access token
-            String accessToken = jwtService.generateAccessToken(user.getId(), user.getUsername(), user.getAuthorities());
+            String accessToken = jwtService.generateAccessToken(user.getUsername(), authorities);
 
             return TokenResponse.builder().accessToken(accessToken).refreshToken(refreshToken).build();
         } catch (Exception e) {
