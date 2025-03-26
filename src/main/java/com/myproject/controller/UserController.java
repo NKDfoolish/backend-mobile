@@ -44,7 +44,7 @@ public class UserController {
 
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("status", HttpStatus.OK.value());
-        result.put("message", "Success");
+        result.put("message", "users");
         result.put("data", userService.findAll(keyword, sort, page, size));
 
         return result;
