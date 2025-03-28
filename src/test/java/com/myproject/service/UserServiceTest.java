@@ -5,6 +5,7 @@ import com.myproject.common.UserStatus;
 import com.myproject.common.UserType;
 import com.myproject.controller.request.AddressRequest;
 import com.myproject.controller.request.UserCreationRequest;
+import com.myproject.controller.request.UserPasswordRequest;
 import com.myproject.controller.request.UserUpdateRequest;
 import com.myproject.controller.response.UserPageResponse;
 import com.myproject.controller.response.UserResponse;
@@ -29,6 +30,7 @@ import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -80,10 +82,6 @@ class UserServiceTest {
     @BeforeEach
     void setUp() {
         userService = new UserServiceImpl(userRepository,addressRepository,passwordEncoder,emailService);
-    }
-
-    @AfterEach
-    void tearDown() {
     }
 
     @Test
@@ -142,14 +140,6 @@ class UserServiceTest {
         // fake method
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> userService.findById(2L));
         assertEquals("User not found", exception.getMessage());
-    }
-
-    @Test
-    void findByUsername() {
-    }
-
-    @Test
-    void findByEmail() {
     }
 
     @Test
@@ -233,7 +223,25 @@ class UserServiceTest {
     }
 
     @Test
-    void changePassword() {
+    void testChangePassword_Success() {
+        Long userId = 2L;
+
+        UserPasswordRequest request = new UserPasswordRequest();
+        request.setId(userId);
+        request.setPassword("newPassword");
+        request.setConfirmPassword("newPassword");
+
+        // Simulate the behavior of the repository and password encoder
+        when(userRepository.findById(userId)).thenReturn(Optional.of(illiao));
+        when(passwordEncoder.encode(request.getPassword())).thenReturn("encodedNewPassword");
+
+        // call method want to test
+        userService.changePassword(request);
+
+        // Verify the result
+        assertEquals("encodedNewPassword", illiao.getPassword());
+        verify(userRepository, times(1)).save(illiao);
+        verify(passwordEncoder, times(1)).encode(request.getPassword());
     }
 
     @Test
@@ -246,5 +254,21 @@ class UserServiceTest {
 
         assertEquals(UserStatus.INACTIVE, adela.getStatus());
         verify(userRepository, times(1)).save(adela);
+    }
+
+    @Test
+    void testUserNotFound_ThrowsException() {
+        // repair data
+        Long userId = 1L;
+
+        // simulate the behavior of the repository
+        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+
+        // call method want to test
+        Exception exception = assertThrows(ResourceNotFoundException.class, () -> userService.delete(userId));
+
+        // check the result
+        assertEquals("User not found", exception.getMessage());
+        verify(userRepository, never()).save(any(UserEntity.class));
     }
 }

@@ -3,10 +3,7 @@ package com.myproject.service.impl;
 import com.myproject.common.TokenType;
 import com.myproject.exception.InvalidDataException;
 import com.myproject.service.JwtService;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
@@ -70,8 +67,14 @@ public class JwtServiceImpl implements JwtService {
 
     private Claims extractAllClaims(TokenType type, String token) {
         try {
-            return Jwts.parser()
-                    .setSigningKey(getKey(type))
+            return Jwts.parserBuilder()
+                    .setSigningKeyResolver(new SigningKeyResolverAdapter(){
+                        @Override
+                        public Key resolveSigningKey(JwsHeader header, Claims claims) {
+                            return getKey(type);
+                        }
+            })
+                    .build()
                     .parseClaimsJws(token)
                     .getBody();
         } catch (SignatureException | ExpiredJwtException e) {
