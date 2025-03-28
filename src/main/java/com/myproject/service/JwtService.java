@@ -1,9 +1,7 @@
 package com.myproject.service;
 
 import com.myproject.common.TokenType;
-import org.springframework.security.core.GrantedAuthority;
 
-import java.util.Collection;
 import java.util.List;
 
 public interface JwtService {

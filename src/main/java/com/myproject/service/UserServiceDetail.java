@@ -13,10 +13,6 @@ public class UserServiceDetail implements UserDetailsService{
 
     private final UserRepository userRepository;
 
-//    public UserDetailsService userDetailsService() {
-//        return userRepository::findByUsername;
-//    }
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserDetails user = userRepository.findByUsername(username);

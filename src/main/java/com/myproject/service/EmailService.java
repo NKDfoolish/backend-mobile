@@ -84,7 +84,7 @@ public class EmailService {
 
         String secretCode = String.format("?secretCode=%s", UUID.randomUUID());
 
-        // TODO generate secret code and save to database
+        // generate secret code and save to database
 
         // Define template
         Map<String, String> map = new HashMap<>();

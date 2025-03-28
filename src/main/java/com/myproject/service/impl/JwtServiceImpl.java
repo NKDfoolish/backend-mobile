@@ -41,7 +41,6 @@ public class JwtServiceImpl implements JwtService {
         log.info("Generate access token with username: {}, authorities: {}", username, authorities);
 
         Map<String, Object> claims = new HashMap<>();
-//        claims.put("userId", userId);
         claims.put("role", authorities);
 
         return generateAccess(claims, username);
@@ -52,7 +51,6 @@ public class JwtServiceImpl implements JwtService {
         log.info("Generate refresh token with username: {}, authorities: {}", username, authorities);
 
         Map<String, Object> claims = new HashMap<>();
-//        claims.put("userId", userId);
         claims.put("role", authorities);
 
         return generateRefresh(claims, username);

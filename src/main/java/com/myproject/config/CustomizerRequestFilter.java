@@ -40,9 +40,9 @@ public class CustomizerRequestFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         log.info("{} {}",request.getMethod(), request.getRequestURI());
 
-        // TODO: check authority by request uri
+        // check authority by request uri
 
-        // TODO verify token
+        // verify token
         String authHeader = request.getHeader("Authorization");
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);

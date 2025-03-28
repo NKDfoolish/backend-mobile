@@ -158,7 +158,7 @@ public class UserServiceImpl implements UserService {
         try {
             emailService.emailVerification(user.getEmail(), user.getFirstName());
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new InvalidDataException("Send email failed");
         }
 
         return result.getId();

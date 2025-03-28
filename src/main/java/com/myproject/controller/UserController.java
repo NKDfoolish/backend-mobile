@@ -1,5 +1,6 @@
 package com.myproject.controller;
 
+import com.myproject.controller.request.ApiResponse;
 import com.myproject.controller.request.UserCreationRequest;
 import com.myproject.controller.request.UserPasswordRequest;
 import com.myproject.controller.request.UserUpdateRequest;
@@ -35,35 +36,33 @@ public class UserController {
     @Operation(summary = "Get list user", description = "API retrieve list of user")
     @GetMapping("/list")
     @PreAuthorize("hasAnyAuthority('manager', 'admin')")
-    public Map<String, Object> getList(@RequestParam(required = false) String keyword,
-                                    @RequestParam(required = false) String sort,
-                                    @RequestParam(defaultValue = "0") int page,
-                                    @RequestParam(defaultValue = "20") int size) {
+    public ApiResponse getList(@RequestParam(required = false) String keyword,
+                               @RequestParam(required = false) String sort,
+                               @RequestParam(defaultValue = "0") int page,
+                               @RequestParam(defaultValue = "20") int size) {
 
         log.info("Get list user");
 
-        Map<String, Object> result = new LinkedHashMap<>();
-        result.put("status", HttpStatus.OK.value());
-        result.put("message", "users");
-        result.put("data", userService.findAll(keyword, sort, page, size));
-
-        return result;
+        return ApiResponse.builder()
+                .status(HttpStatus.OK.value())
+                .message("user list")
+                .data(userService.findAll(keyword, sort, page, size))
+                .build();
     }
 
     @Operation(summary = "Get user detail", description = "API retrieve user detail by id")
     @GetMapping("/{userId}")
     @PreAuthorize("hasAuthority('user')")
-    public Map<String, Object> getUserDetail(@PathVariable @Min(value = 1, message = "UserId must be equal or greater than 1") Long userId) {
+    public ApiResponse getUserDetail(@PathVariable @Min(value = 1, message = "UserId must be equal or greater than 1") Long userId) {
         log.info("Get user detail {}", userId);
 
         UserResponse userResponse = userService.findById(userId);
 
-        Map<String, Object> result = new LinkedHashMap<>();
-        result.put("status", HttpStatus.OK.value());
-        result.put("message", "Success");
-        result.put("data", userResponse);
-
-        return result;
+        return ApiResponse.builder()
+                .status(HttpStatus.OK.value())
+                .message("user")
+                .data(userResponse)
+                .build();
     }
 
     @GetMapping("/confirm-email")
@@ -71,7 +70,7 @@ public class UserController {
         log.info("Confirm email {}", secretCode);
 
         try {
-            // TODO check or compare secretCode from db
+            // check or compare secretCode from db
         } catch (Exception e) {
             log.error("Error confirm email!, errorMessage={}", e.getMessage());
         } finally {
@@ -81,60 +80,53 @@ public class UserController {
 
     @Operation(summary = "Create user", description = "API create new user")
     @PostMapping("/add")
-    public ResponseEntity<Object> createUser(@RequestBody @Valid UserCreationRequest request) {
+    public ApiResponse createUser(@RequestBody @Valid UserCreationRequest request) {
         log.info("Create user {}", request);
 
-        Map<String, Object> result = new LinkedHashMap<>();
-        result.put("status", HttpStatus.CREATED.value());
-        result.put("message", "Success");
-        result.put("data", userService.save(request));
-
-        return new ResponseEntity<>(result, HttpStatus.CREATED);
+        return ApiResponse.builder()
+                .status(HttpStatus.CREATED.value())
+                .message("user created successfully")
+                .data(userService.save(request))
+                .build();
     }
 
     @Operation(summary = "Update user", description = "API update user by id")
     @PutMapping("/upd")
-    public Map<String, Object> updateUser(@RequestBody @Valid UserUpdateRequest request) {
+    public ApiResponse updateUser(@RequestBody @Valid UserUpdateRequest request) {
         log.info("Update user {}", request);
 
         userService.update(request);
 
-        Map<String, Object> result = new LinkedHashMap<>();
-        result.put("status", HttpStatus.ACCEPTED.value());
-        result.put("message", "Success");
-        result.put("data", "");
-
-        return result;
+        return ApiResponse.builder()
+                .status(HttpStatus.ACCEPTED.value())
+                .message("user updated successfully")
+                .build();
     }
 
     @Operation(summary = "Change password", description = "API change password by id")
     @PatchMapping("/change-pwd")
-    public Map<String, Object> changePassword(@RequestBody @Valid UserPasswordRequest request) {
+    public ApiResponse changePassword(@RequestBody @Valid UserPasswordRequest request) {
         log.info("Change password {}", request);
 
         userService.changePassword(request);
 
-        Map<String, Object> result = new LinkedHashMap<>();
-        result.put("status", HttpStatus.NO_CONTENT.value());
-        result.put("message", "Success");
-        result.put("data", "");
-
-        return result;
+        return ApiResponse.builder()
+                .status(HttpStatus.NO_CONTENT.value())
+                .message("user updated successfully")
+                .build();
     }
 
     @Operation(summary = "Delete user", description = "API delete user by id")
     @DeleteMapping("/del/{userId}")
     @PreAuthorize("hasAuthority('admin')")
-    public Map<String, Object> deleteUser(@PathVariable @Min(value = 1, message = "UserId must be equal or greater than 1") Long userId) {
+    public ApiResponse deleteUser(@PathVariable @Min(value = 1, message = "UserId must be equal or greater than 1") Long userId) {
         log.info("Delete user {}", userId);
 
         userService.delete(userId);
 
-        Map<String, Object> result = new LinkedHashMap<>();
-        result.put("status", HttpStatus.RESET_CONTENT.value());
-        result.put("message", "Success");
-        result.put("data", "");
-
-        return result;
+        return ApiResponse.builder()
+                .status(HttpStatus.RESET_CONTENT.value())
+                .message("user deleted successfully")
+                .build();
     }
 }

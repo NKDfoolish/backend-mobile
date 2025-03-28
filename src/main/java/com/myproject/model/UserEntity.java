@@ -12,6 +12,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.*;
 
@@ -92,5 +95,13 @@ public class UserEntity extends AbstractEntity<Long> implements UserDetails, Ser
     @Override
     public boolean isEnabled() {
         return UserStatus.ACTIVE.equals(status);
+    }
+
+    private void writeObject (ObjectOutputStream stream) throws IOException {
+        stream.defaultWriteObject();
+    }
+
+    private void readObject (ObjectInputStream stream) throws IOException, ClassNotFoundException {
+        stream.defaultReadObject();
     }
 }

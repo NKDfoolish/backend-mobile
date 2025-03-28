@@ -54,11 +54,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             log.error("Login failed: {}", e.getMessage());
             throw new AccessDeniedException(e.getMessage());
         }
-//
-//        var user = userRepository.findByUsername(request.getUsername());
-//        if (user == null){
-//            throw new UsernameNotFoundException("User not found");
-//        }
 
         String accessToken = jwtService.generateAccessToken(request.getUsername(), authorities);
         String refreshToken = jwtService.generateRefreshToken(request.getUsername(), authorities);
