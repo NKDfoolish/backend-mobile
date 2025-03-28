@@ -2,13 +2,13 @@
 
 # 1. Prerequisite
 
-Cài đặt JDK 17+ nếu chưa thì cài đặt JDK
+Cài đặt JDK 17+ nếu chưa thì cài đặt [JDK](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
 
-Install Maven 3.5+ nếu chưa thì cài đặt Maven
+Install Maven 3.5+ nếu chưa thì cài đặt [Maven](https://maven.apache.org/download.cgi)
 
-Install IntelliJ nếu chưa thì cài đặt IntelliJ
+Install IntelliJ nếu chưa thì cài đặt [IntelliJ](https://www.jetbrains.com/idea/download/?section=windows)
 
-Install Docker nếu chưa thì cài đặt Docker
+Install Docker nếu chưa thì cài đặt Docker [Docker](https://docs.docker.com/get-docker/)
 
 # 2. Technical Stacks
 
