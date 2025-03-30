@@ -34,11 +34,15 @@ services:
 
   backend-service:
     container_name: backend-service
-    build:
-      context: ./
-      dockerfile: Dockerfile
+    image: duyfoolish/backend-service:latest
+
+    #    build:
+#      context: ./
+#      dockerfile: Dockerfile
     ports:
       - "8080:8080"
+    env_file:
+      - .env
     environment:
       DATABASE_HOST: host.docker.internal
       DATABASE_PORT: 5432

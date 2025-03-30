@@ -35,7 +35,7 @@ public class UserController {
 
     @Operation(summary = "Get list user", description = "API retrieve list of user")
     @GetMapping("/list")
-    @PreAuthorize("hasAnyAuthority('manager', 'admin')")
+    @PreAuthorize("hasAnyAuthority('manager', 'admin', 'sysadmin')")
     public ApiResponse getList(@RequestParam(required = false) String keyword,
                                @RequestParam(required = false) String sort,
                                @RequestParam(defaultValue = "0") int page,

@@ -28,6 +28,7 @@
 	</scm>
 	<properties>
 		<java.version>17</java.version>
+		<image.path>registry.hub.docker.com/duyfoolish</image.path>
 	</properties>
 	<dependencies>
 
@@ -202,6 +203,36 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+
+			<plugin>
+				<groupId>com.google.cloud.tools</groupId>
+				<artifactId>jib-maven-plugin</artifactId>
+				<version>2.8.0</version>
+				<configuration>
+					<from>
+						<image>openjdk:17-alpine</image>
+					</from>
+					<to>
+						<image>${image.path}/${project.artifactId}:latest</image>
+						<!-- Setting dockerhub account -->
+<!--						<auth>-->
+<!--							&lt;!&ndash;suppress UnresolvedMavenProperty &ndash;&gt;-->
+<!--							<username>${env.DOCKER_USERNAME}</username>-->
+<!--							&lt;!&ndash;suppress UnresolvedMavenProperty &ndash;&gt;-->
+<!--							<password>${env.DOCKER_PASSWORD}</password>-->
+<!--						</auth>-->
+					</to>
+					<container>
+						<ports>
+							<port>8080</port>
+						</ports>
+						<environment>
+							<SPRING_PROFILES_ACTIVE>dev</SPRING_PROFILES_ACTIVE>
+						</environment>
+					</container>
+				</configuration>
+			</plugin>
+
 		</plugins>
 		<finalName>backend-service</finalName>
 	</build>
