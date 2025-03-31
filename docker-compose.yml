@@ -113,6 +113,57 @@ services:
     volumes:
       - grafana:/var/lib/grafana
 
+#  jenkins:
+#    image: jenkins/jenkins:lts
+#    container_name: jenkins
+#    restart: unless-stopped
+#    ports:
+#      - "7080:8080"  # Cổng Jenkins chính
+#      - "50000:50000"  # Cổng cho JNLP agents (nếu cần)
+#    volumes:
+#      - jenkins_data:/var/jenkins_home  # Lưu trữ dữ liệu Jenkins
+#    environment:
+#      - DOCKER_HOST=tcp://host.docker.internal:2375
+#    networks:
+#      - default
+
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: jenkins
+    restart: unless-stopped
+    user: root
+    ports:
+      - "7080:8080"
+      - "50000:50000"
+    environment:
+      - DOCKER_HOST=tcp://host.docker.internal:2375
+    volumes:
+      - "jenkins_data:/var/jenkins_home"
+    networks:
+      - default
+    command: >
+      /bin/bash -c "apt-get update &&
+                    apt-get install -y docker.io &&
+                    exec /usr/local/bin/jenkins.sh"
+  
+  
+
+  sonarqube:
+    image: sonarqube:community
+    container_name: sonarqube
+    restart: unless-stopped  # Thêm để đồng bộ với các service khác
+    ports:
+      - "9000:9000"
+    environment:
+      - SONAR_JDBC_USERNAME=khanhduy
+      - SONAR_JDBC_PASSWORD=khanhduy
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_extensions:/opt/sonarqube/extensions
+      - sonarqube_logs:/opt/sonarqube/logs
+    networks:
+      - default
+
 networks:
   default:
     name: backend-service
@@ -120,4 +171,8 @@ networks:
 volumes:
   grafana:
   postgres:
+  jenkins_data:
+  sonarqube_data:
+  sonarqube_extensions:
+  sonarqube_logs:
 #  mysql_data:
