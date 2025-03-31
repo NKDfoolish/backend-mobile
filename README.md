@@ -32,6 +32,18 @@ Docker
 
 Docker compose
 
+Grafana
+
+Prometheus
+
+ELK (Elasticsearch, Logstash, Kibana)
+
+logstash
+
+sonarqube
+
+jenkins
+
 …
 
 
