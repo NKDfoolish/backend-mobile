@@ -44,6 +44,8 @@ sonarqube
 
 jenkins
 
+docker-hub
+
 …
 
 
