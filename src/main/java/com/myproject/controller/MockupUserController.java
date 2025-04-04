@@ -1,11 +1,11 @@
 package com.myproject.controller;
 
 import com.myproject.common.Gender;
-import com.myproject.controller.request.ApiResponse;
-import com.myproject.controller.request.UserCreationRequest;
-import com.myproject.controller.request.UserPasswordRequest;
-import com.myproject.controller.request.UserUpdateRequest;
-import com.myproject.controller.response.UserResponse;
+import com.myproject.dto.request.ApiResponse;
+import com.myproject.dto.request.UserCreationRequest;
+import com.myproject.dto.request.UserPasswordRequest;
+import com.myproject.dto.request.UserUpdateRequest;
+import com.myproject.dto.response.UserResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;

@@ -33,13 +33,16 @@ public class AppConfig {
     private final CustomizerRequestFilter requestFilter;
     private final UserServiceDetail userServiceDetail;
 
+    private String[] WHITE_LIST = {
+            "/auth/**"
+    };
+
     // Init spring web security
     // Config spring web configurer
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(request -> request.requestMatchers("/auth/**").permitAll()
-                        .anyRequest().authenticated())
+                .authorizeHttpRequests(request -> request.requestMatchers(WHITE_LIST).permitAll().anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider()).addFilterBefore(requestFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

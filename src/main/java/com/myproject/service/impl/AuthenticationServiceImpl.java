@@ -1,7 +1,7 @@
 package com.myproject.service.impl;
 
-import com.myproject.controller.request.SignInRequest;
-import com.myproject.controller.response.TokenResponse;
+import com.myproject.dto.request.SignInRequest;
+import com.myproject.dto.response.TokenResponse;
 import com.myproject.exception.ForBiddenException;
 import com.myproject.exception.InvalidDataException;
 import com.myproject.model.UserEntity;
@@ -16,9 +16,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -90,6 +88,20 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             log.error("Access denied! errorMessage: {}", e.getMessage());
             throw new ForBiddenException(e.getMessage());
         }
+    }
+
+    @Override
+    public String forgotPassword(String email) {
+        log.info("Forgot password");
+        // check email exist or not
+
+        // User is active or inactivated
+
+        // generate reset password token
+
+        // send email to user with reset password link
+
+        return "";
     }
 
 }

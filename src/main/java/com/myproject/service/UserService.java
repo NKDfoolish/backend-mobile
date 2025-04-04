@@ -1,10 +1,10 @@
 package com.myproject.service;
 
-import com.myproject.controller.request.UserCreationRequest;
-import com.myproject.controller.request.UserPasswordRequest;
-import com.myproject.controller.request.UserUpdateRequest;
-import com.myproject.controller.response.UserPageResponse;
-import com.myproject.controller.response.UserResponse;
+import com.myproject.dto.request.UserCreationRequest;
+import com.myproject.dto.request.UserPasswordRequest;
+import com.myproject.dto.request.UserUpdateRequest;
+import com.myproject.dto.response.UserPageResponse;
+import com.myproject.dto.response.UserResponse;
 
 public interface UserService {
 

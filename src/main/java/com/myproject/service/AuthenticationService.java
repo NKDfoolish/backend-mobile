@@ -1,11 +1,13 @@
 package com.myproject.service;
 
-import com.myproject.controller.request.SignInRequest;
-import com.myproject.controller.response.TokenResponse;
+import com.myproject.dto.request.SignInRequest;
+import com.myproject.dto.response.TokenResponse;
 
 public interface AuthenticationService {
 
     TokenResponse getAccessToken(SignInRequest request);
 
     TokenResponse getRefreshToken(String request);
+
+    String forgotPassword(String email);
 }

@@ -1,10 +1,10 @@
 package com.myproject.controller;
 
-import com.myproject.controller.request.ApiResponse;
-import com.myproject.controller.request.UserCreationRequest;
-import com.myproject.controller.request.UserPasswordRequest;
-import com.myproject.controller.request.UserUpdateRequest;
-import com.myproject.controller.response.UserResponse;
+import com.myproject.dto.request.ApiResponse;
+import com.myproject.dto.request.UserCreationRequest;
+import com.myproject.dto.request.UserPasswordRequest;
+import com.myproject.dto.request.UserUpdateRequest;
+import com.myproject.dto.response.UserResponse;
 import com.myproject.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -14,14 +14,11 @@ import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/user")

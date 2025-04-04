@@ -1,7 +1,8 @@
 package com.myproject.controller;
 
-import com.myproject.controller.request.SignInRequest;
-import com.myproject.controller.response.TokenResponse;
+import com.myproject.dto.request.ApiResponse;
+import com.myproject.dto.request.SignInRequest;
+import com.myproject.dto.response.TokenResponse;
 import com.myproject.service.AuthenticationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -34,9 +35,18 @@ public class AuthenticationController {
     public TokenResponse getRefreshToken(@RequestBody String refreshToken) {
         log.info("Refresh token request");
 
-        return TokenResponse.builder()
-                .accessToken("DUMMY_NEW_ACCESS_TOKEN")
-                .refreshToken("DUMMY_REFRESH_TOKEN")
+        return authenticationService.getRefreshToken(refreshToken);
+    }
+
+    @Operation(summary = "Forgot password", description = "Send email to reset password")
+    @PostMapping("/forgot-password")
+    public ApiResponse forgotPassword(@RequestBody String email) {
+        log.info("Forgot password request");
+
+        return ApiResponse.builder()
+                .status(200)
+                .message("Password reset link sent to email")
+                .data(null)
                 .build();
     }
 }

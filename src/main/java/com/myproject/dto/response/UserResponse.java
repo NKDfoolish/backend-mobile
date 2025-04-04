@@ -1,4 +1,4 @@
-package com.myproject.controller.response;
+package com.myproject.dto.response;
 
 import com.myproject.common.Gender;
 import lombok.*;

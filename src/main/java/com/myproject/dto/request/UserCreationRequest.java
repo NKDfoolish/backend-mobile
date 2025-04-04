@@ -1,4 +1,4 @@
-package com.myproject.controller.request;
+package com.myproject.dto.request;
 
 import com.myproject.common.Gender;
 import com.myproject.common.UserType;

@@ -1,4 +1,4 @@
-package com.myproject.controller.request;
+package com.myproject.dto.request;
 
 import lombok.Getter;
 import lombok.Setter;

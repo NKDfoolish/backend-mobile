@@ -1,8 +1,8 @@
 package com.myproject.controller;
 
 import com.myproject.common.Gender;
-import com.myproject.controller.response.UserPageResponse;
-import com.myproject.controller.response.UserResponse;
+import com.myproject.dto.response.UserPageResponse;
+import com.myproject.dto.response.UserResponse;
 import com.myproject.service.JwtService;
 import com.myproject.service.UserService;
 import com.myproject.service.UserServiceDetail;
