@@ -1,5 +1,6 @@
 package com.myproject.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.myproject.common.Gender;
 import com.myproject.common.UserStatus;
 import com.myproject.common.UserType;
@@ -7,7 +8,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.Type;
 import org.hibernate.type.SqlTypes;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -61,6 +61,10 @@ public class UserEntity extends AbstractEntity<Long> implements UserDetails, Ser
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(name = "status")
     private UserStatus status;
+
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private Set<Garden> gardens = new HashSet<>();
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<UserHasRole> roles = new HashSet<>();
