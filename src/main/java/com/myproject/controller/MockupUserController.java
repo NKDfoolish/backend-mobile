@@ -1,7 +1,7 @@
 package com.myproject.controller;
 
 import com.myproject.common.Gender;
-import com.myproject.dto.request.ApiResponse;
+import com.myproject.dto.response.ApiResponse;
 import com.myproject.dto.request.UserCreationRequest;
 import com.myproject.dto.request.UserPasswordRequest;
 import com.myproject.dto.request.UserUpdateRequest;

@@ -1,4 +1,4 @@
-package com.myproject.dto.request;
+package com.myproject.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;

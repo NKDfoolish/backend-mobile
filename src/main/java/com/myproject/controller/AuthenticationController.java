@@ -1,6 +1,6 @@
 package com.myproject.controller;
 
-import com.myproject.dto.request.ApiResponse;
+import com.myproject.dto.response.ApiResponse;
 import com.myproject.dto.request.SignInRequest;
 import com.myproject.dto.response.TokenResponse;
 import com.myproject.service.AuthenticationService;
