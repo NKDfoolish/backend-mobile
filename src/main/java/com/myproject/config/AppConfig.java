@@ -34,7 +34,8 @@ public class AppConfig {
     private final UserServiceDetail userServiceDetail;
 
     private String[] WHITE_LIST = {
-            "/auth/**"
+            "/auth/**",
+            "/file/download/plant/**",
     };
 
     // Init spring web security

@@ -19,7 +19,7 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
   sendgrid:
     apiKey: ${SENDGRID_API_KEY}
     from-email: ${SENDGRID_FROM_EMAIL}
@@ -44,3 +44,8 @@ jwt:
   expiryDays: 14
   accessKey: ${JWT_ACCESS_SECRET}
   refreshKey: ${JWT_REFRESH_SECRET}
+
+app:
+  file:
+    storage-dir: D:/learn/myproject/backend-service/upload
+    download-prefix: http://localhost:8080/file/download/
