@@ -47,5 +47,5 @@ jwt:
 
 app:
   file:
-    storage-dir: D:/learn/myproject/backend-service/upload
-    download-prefix: http://localhost:8080/file/download/
+    storage-dir: ${STORAGE_DIR}
+    download-prefix: ${DOWNLOAD_PREFIX}
