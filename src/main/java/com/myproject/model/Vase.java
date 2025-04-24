@@ -17,11 +17,11 @@ public class Vase extends AbstractEntity<Integer> implements Serializable {
     private String vaseName;
 
     @ManyToOne
-    @JoinColumn(name = "plant_id", nullable = false)
+    @JoinColumn(name = "plant_id", nullable = true)
     private Plant plant;
 
     @ManyToOne
-    @JoinColumn(name = "area_id", nullable = false)
+    @JoinColumn(name = "area_id", nullable = true)
     @JsonIgnore
     private Area area;
 }

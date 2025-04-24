@@ -80,6 +80,8 @@ public class PlantServiceImpl implements PlantService {
                 .plantName(plant.getPlantName())
                 .image(plant.getImage())
                 .description(plant.getDescription())
+                .createdAt(plant.getCreatedAt())
+                .updatedAt(plant.getUpdatedAt())
                 .build();
     }
 
@@ -121,7 +123,6 @@ public class PlantServiceImpl implements PlantService {
 
         plantRepository.save(plant);
         log.info("Plant updated: {}", plant);
-
     }
 
     @Override
@@ -147,7 +148,6 @@ public class PlantServiceImpl implements PlantService {
                         .id(plant.getId())
                         .plantName(plant.getPlantName())
                         .image(plant.getImage())
-                        .description(plant.getDescription())
                         .build())
                 .toList();
 

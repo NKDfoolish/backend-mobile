@@ -12,11 +12,10 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class PlantResponse implements Serializable {
-    private Long id;
-    private String plantName;
-    private String image;
-    private String description;
+public class VaseResponse implements Serializable {
+    private Integer id;
+    private String vaseName;
+    private PlantResponse plant;
     private Date createdAt;
     private Date updatedAt;
 }
