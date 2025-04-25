@@ -14,5 +14,5 @@ public class AreaCreationRequest implements Serializable {
     @NotBlank(message = "Area name is required")
     private String areaName;
 
-    private Integer vaseSize;
+    private Integer gardenId;
 }

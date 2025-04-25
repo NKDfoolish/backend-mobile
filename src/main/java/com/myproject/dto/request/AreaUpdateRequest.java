@@ -13,5 +13,5 @@ public class AreaUpdateRequest {
 
     private String areaName;
 
-    private Integer vaseSize;
+    private Integer gardenId;
 }

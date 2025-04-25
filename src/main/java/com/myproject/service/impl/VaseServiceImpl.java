@@ -2,13 +2,16 @@ package com.myproject.service.impl;
 
 import com.myproject.dto.request.VaseCreationRequest;
 import com.myproject.dto.request.VaseUpdateRequest;
+import com.myproject.dto.response.AreaResponse;
 import com.myproject.dto.response.PlantResponse;
 import com.myproject.dto.response.VasePageResponse;
 import com.myproject.dto.response.VaseResponse;
 import com.myproject.exception.InvalidDataException;
 import com.myproject.exception.ResourceNotFoundException;
+import com.myproject.model.Area;
 import com.myproject.model.Plant;
 import com.myproject.model.Vase;
+import com.myproject.repository.AreaRepository;
 import com.myproject.repository.PlantRepository;
 import com.myproject.repository.VaseRepository;
 import com.myproject.service.VaseService;
@@ -33,6 +36,7 @@ public class VaseServiceImpl implements VaseService {
 
     private final VaseRepository vaseRepository;
     private final PlantRepository plantRepository;
+    private final AreaRepository areaRepository;
 
     @Override
     public VasePageResponse findAll(String keyword, String sort, int page, int size) {
@@ -87,6 +91,10 @@ public class VaseServiceImpl implements VaseService {
                         .plantName(vase.getPlant().getPlantName())
                         .image(vase.getPlant().getImage())
                         .build() : null)
+                .area(vase.getArea() != null ? AreaResponse.builder()
+                        .id(vase.getArea().getId())
+                        .areaName(vase.getArea().getAreaName())
+                        .build() : null)
                 .createdAt(vase.getCreatedAt())
                 .updatedAt(vase.getUpdatedAt())
                 .build();
@@ -110,10 +118,20 @@ public class VaseServiceImpl implements VaseService {
             vase.setPlant(plant);
         }
 
+        if (req.getAreaId() != null) {
+            Area area = getAreaById(req.getAreaId());
+            vase.setArea(area);
+        }
+
         Vase result = vaseRepository.save(vase);
         log.info("Vase saved with id {}", result.getId());
 
         return result.getId();
+    }
+
+    private Area getAreaById(Integer areaId) {
+        return areaRepository.findById(areaId)
+                .orElseThrow(() -> new ResourceNotFoundException("Area not found"));
     }
 
     @Override
@@ -131,6 +149,11 @@ public class VaseServiceImpl implements VaseService {
         if (req.getPlantId() != null) {
             Plant plant = getPlantById(req.getPlantId());
             vase.setPlant(plant);
+        }
+
+        if (req.getAreaId() != null) {
+            Area area = getAreaById(req.getAreaId());
+            vase.setArea(area);
         }
 
         vaseRepository.save(vase);
@@ -161,6 +184,10 @@ public class VaseServiceImpl implements VaseService {
                         .plant(vase.getPlant() != null ? PlantResponse.builder()
                                 .id(vase.getPlant().getId())
                                 .plantName(vase.getPlant().getPlantName())
+                                .build() : null)
+                        .area(vase.getArea() != null ? AreaResponse.builder()
+                                .id(vase.getArea().getId())
+                                .areaName(vase.getArea().getAreaName())
                                 .build() : null)
                         .build())
                 .toList();

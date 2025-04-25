@@ -16,6 +16,7 @@ public class VaseResponse implements Serializable {
     private Integer id;
     private String vaseName;
     private PlantResponse plant;
+    private AreaResponse area;
     private Date createdAt;
     private Date updatedAt;
 }

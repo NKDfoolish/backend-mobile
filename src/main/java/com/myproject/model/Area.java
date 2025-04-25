@@ -21,14 +21,11 @@ public class Area extends AbstractEntity<Integer> implements Serializable {
     @Column(name = "image", length = 255)
     private String image;
 
-    @Column(name = "vase_size")
-    private int vaseSize;
-
     @OneToMany(mappedBy = "area")
     private Set<Vase> vases = new HashSet<>();
 
     @ManyToOne
-    @JoinColumn(name = "garden_id", nullable = false)
+    @JoinColumn(name = "garden_id", nullable = true)
     @JsonIgnore
     private Garden garden;
 
