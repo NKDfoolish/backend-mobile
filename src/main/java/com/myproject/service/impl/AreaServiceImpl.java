@@ -80,7 +80,7 @@ public class AreaServiceImpl implements AreaService {
         return AreaResponse.builder()
                 .id(id)
                 .areaName(area.getAreaName())
-                .garden(area.getGarden())
+                .gardenId(area.getGarden().getId())
                 .createdAt(area.getCreatedAt())
                 .updatedAt(area.getUpdatedAt())
                 .build();
@@ -157,7 +157,7 @@ public class AreaServiceImpl implements AreaService {
                 .map(area -> AreaResponse.builder()
                         .id(area.getId())
                         .areaName(area.getAreaName())
-                        .garden(area.getGarden())
+                        .gardenId(area.getGarden().getId())
                         .build())
                 .toList();
 

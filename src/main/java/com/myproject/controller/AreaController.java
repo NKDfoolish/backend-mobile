@@ -2,11 +2,8 @@ package com.myproject.controller;
 
 import com.myproject.dto.request.AreaCreationRequest;
 import com.myproject.dto.request.AreaUpdateRequest;
-import com.myproject.dto.request.VaseCreationRequest;
-import com.myproject.dto.request.VaseUpdateRequest;
 import com.myproject.dto.response.ApiResponse;
 import com.myproject.dto.response.AreaResponse;
-import com.myproject.dto.response.VaseResponse;
 import com.myproject.service.AreaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
