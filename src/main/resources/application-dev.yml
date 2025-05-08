@@ -40,12 +40,15 @@ openapi:
     version: 1.0.0
 
 jwt:
-  expiryMinutes: 5
+  expiryMinutes: 60
   expiryDays: 14
   accessKey: ${JWT_ACCESS_SECRET}
   refreshKey: ${JWT_REFRESH_SECRET}
 
+cloudinary:
+  cloud-name: ${CLOUDINARY_CLOUD_NAME}
+  api-key: ${CLOUDINARY_API_KEY}
+  api-secret: ${CLOUDINARY_API_SECRET}
 app:
   file:
-    storage-dir: ${STORAGE_DIR}
-    download-prefix: ${DOWNLOAD_PREFIX}
+    download-prefix: http://localhost:8080/file/download/plant/

@@ -52,7 +52,7 @@ services:
   elastic-search:
     image: elasticsearch:7.14.1
     container_name: elasticsearch
-    restart: always
+    restart: no
     ports:
       - "9200:9200"
     environment:
@@ -63,7 +63,7 @@ services:
   kibana:
     image: kibana:7.14.1
     container_name: kibana
-    restart: always
+    restart: no
     ports:
       - "5601:5601"
     environment:
@@ -74,7 +74,7 @@ services:
   logstash:
     image: logstash:7.14.1
     container_name: logstash
-    restart: always
+    restart: no
     ports:
       - "5600:5600" # Socket port
       - "5044:5044"
