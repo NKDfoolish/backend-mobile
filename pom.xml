@@ -158,6 +158,12 @@
 			<version>6.6</version>
 		</dependency>
 
+		<!-- MongoDB -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-mongodb</artifactId>
+		</dependency>
+
 		<!-- Cloudinary -->
 		<dependency>
 			<groupId>com.cloudinary</groupId>

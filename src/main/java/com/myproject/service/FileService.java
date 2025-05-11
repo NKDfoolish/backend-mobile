@@ -35,29 +35,33 @@ public class FileService {
     public String uploadFile(Long plantId, MultipartFile file) throws IOException {
         log.info("Uploading file: {}", file.getOriginalFilename());
 
-        String fileExtension = StringUtils
-                .getFilenameExtension(file.getOriginalFilename());
-
-        String publicId = UUID.randomUUID().toString() + (fileExtension != null ? "." + fileExtension : "");
+        String publicId = UUID.randomUUID().toString();
 
         // Upload file to Cloudinary
         Map uploadResult = cloudinary.uploader().upload(file.getBytes(),
                 ObjectUtils.asMap("public_id", publicId, "resource_type", "image"));
 
         log.info("Upload result: {}", uploadResult);
-        log.info("File uploaded successfully: {}", publicId);
+
+        // Get the secure URL from the upload result
+        String secureUrl = (String) uploadResult.get("secure_url");
+        log.info("File uploaded successfully. URL: {}", secureUrl);
 
         // Save the file information to the database
         Plant plant = plantRepository.findById(plantId)
                 .orElseThrow(() -> new ResourceNotFoundException("Plant not found with id: " + plantId));
 
         // Delete old file if exists
-        if (StringUtils.hasText(plant.getImage())) {
-            String oldPublicId = plant.getImage();
+        if (StringUtils.hasText(plant.getImage()) && plant.getImage().contains("/")) {
+            // Extract public_id from the old URL
+            String oldPublicId = plant.getImage().substring(plant.getImage().lastIndexOf("/") + 1);
+            if (oldPublicId.contains(".")) {
+                oldPublicId = oldPublicId.substring(0, oldPublicId.lastIndexOf("."));
+            }
             cloudinary.uploader().destroy(oldPublicId, ObjectUtils.asMap("resource_type", "image"));
         }
 
-        plant.setImage(publicId);
+        plant.setImage(secureUrl);
         plantRepository.save(plant);
 
         return urlPrefix + plantId;
@@ -73,20 +77,13 @@ public class FileService {
             throw new ResourceNotFoundException("File not found for plant id: " + plantId);
         }
 
-        // Fetch the resource details from Cloudinary to get the secure_url
-        String cloudinaryUrl;
-        try {
-            Map resource = cloudinary.api().resource(plant.getImage(), ObjectUtils.asMap("resource_type", "image"));
-            cloudinaryUrl = (String) resource.get("secure_url");
-            log.info("Fetched Cloudinary secure_url: {}", cloudinaryUrl);
-        } catch (Exception e) {
-            log.error("Failed to fetch resource from Cloudinary for public_id: {}", plant.getImage(), e);
-            throw new ResourceNotFoundException("Failed to retrieve file metadata for plant id: " + plantId);
-        }
+        // The image field now contains the full Cloudinary URL
+        String cloudinaryUrl = plant.getImage();
 
         // Determine content type based on file extension
-        String contentType = StringUtils.getFilenameExtension(plant.getImage()) != null
-                ? "image/" + StringUtils.getFilenameExtension(plant.getImage()).toLowerCase()
+        String extension = cloudinaryUrl.substring(cloudinaryUrl.lastIndexOf(".") + 1);
+        String contentType = extension != null && !extension.isEmpty()
+                ? "image/" + extension.toLowerCase()
                 : "application/octet-stream";
 
         // Fetch file content with error handling

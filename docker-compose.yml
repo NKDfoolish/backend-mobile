@@ -1,21 +1,4 @@
 services:
-#  mysql:
-#    image: mysql:8.0
-#    container_name: mysql
-#    cap_add:
-#      - SYS_NICE
-#    restart: always
-#    environment:
-#      - MYSQL_DATABASE=testdb
-#      - MYSQL_ROOT_PASSWORD=password
-#    ports:
-#      - '3306:3306'
-#    volumes:
-#      - mysql_data:/var/lib/mysql
-#      - ./initdb.sql:/docker-entrypoint-initdb.d/initdb.sql
-#    networks:
-#      - default
-
   postgres:
     image: postgres
     container_name: postgres
@@ -29,6 +12,21 @@ services:
       - ./initdb.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - '5432:5432'
+    networks:
+      - default
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: khanhduy
+      MONGO_INITDB_ROOT_PASSWORD: khanhduy
+      MONGO_INITDB_DATABASE: plantdb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
     networks:
       - default
 
@@ -46,6 +44,8 @@ services:
       DATABASE_HOST: host.docker.internal
       DATABASE_PORT: 5432
       LOGSTASH_HOST: host.docker.internal:5600
+    depends_on:
+      - postgres
     networks:
       - default
 
@@ -174,4 +174,4 @@ volumes:
   sonarqube_data:
   sonarqube_extensions:
   sonarqube_logs:
-#  mysql_data:
+  mongodb_data:

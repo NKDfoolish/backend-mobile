@@ -25,6 +25,10 @@ spring:
     from-email: ${SENDGRID_FROM_EMAIL}
     template-id: ${SENDGRID_TEMPLATE_ID}
     verification-link: ${SENDGRID_VERIFICATION_LINK}
+  data:
+    mongodb:
+      uri: mongodb://${MONGO_USER:khanhduy}:${MONGO_PASSWORD:khanhduy}@${MONGO_HOST:localhost}:${MONGO_PORT:27017}/${MONGO_DB:plantdb}?authSource=admin
+      auto-index-creation: true
 
 # application-dev.yml
 springdoc:
