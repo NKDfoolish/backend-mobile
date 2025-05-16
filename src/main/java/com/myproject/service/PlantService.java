@@ -11,7 +11,6 @@ public interface PlantService {
 
     PlantResponse findById(Long id);
 
-
     long save(PlantCreationRequest req);
 
     void update(PlantUpdateRequest req);

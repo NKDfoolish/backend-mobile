@@ -9,4 +9,4 @@ RUN test -f .env && cp .env /app/.env || echo ".env not found"
 
 ENTRYPOINT ["java", "-jar", "backend-service.jar"]
 
-EXPOSE 8080
+EXPOSE 8088
