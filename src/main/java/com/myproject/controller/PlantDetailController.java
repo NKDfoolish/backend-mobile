@@ -1,10 +1,9 @@
 package com.myproject.controller;
 
-import com.myproject.dto.request.PlantCreationRequest;
 import com.myproject.dto.request.PlantDetailRequest;
+import com.myproject.dto.request.PlantDetailUpdateRequest;
 import com.myproject.dto.response.ApiResponse;
 import com.myproject.dto.response.PlantDetailResponse;
-import com.myproject.dto.response.PlantResponse;
 import com.myproject.service.PlantDetailService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -49,6 +48,32 @@ public class PlantDetailController {
                 .status(HttpStatus.OK.value())
                 .message("plant with more information")
                 .data(plantResponse)
+                .build();
+    }
+
+    @Operation(summary = "Update plant & information", description = "API update plant & information")
+    @PutMapping("/upd")
+    public ApiResponse updatePlant(@RequestBody @Valid PlantDetailUpdateRequest req) {
+        log.info("Update plant & information {}", req);
+
+        plantDetailService.update(req);
+
+        return ApiResponse.builder()
+                .status(HttpStatus.ACCEPTED.value())
+                .message("plant with more information updated successfully")
+                .build();
+    }
+
+    @Operation(summary = "Delete plant & information", description = "API delete plant & information by plant id")
+    @DeleteMapping("/del/{plantId}")
+    public ApiResponse deletePlant(@PathVariable @Min(value = 1, message = "PlantId must be equal or greater than 1") Long plantId) {
+        log.info("Delete plant {}", plantId);
+
+        plantDetailService.delete(plantId);
+
+        return ApiResponse.builder()
+                .status(HttpStatus.RESET_CONTENT.value())
+                .message("plant with information deleted successfully")
                 .build();
     }
 }
