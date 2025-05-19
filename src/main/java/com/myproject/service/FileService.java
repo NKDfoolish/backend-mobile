@@ -5,6 +5,8 @@ import com.cloudinary.utils.ObjectUtils;
 import com.myproject.dto.FileData;
 import com.myproject.exception.ResourceNotFoundException;
 import com.myproject.model.Plant;
+import com.myproject.model.PlantDetail;
+import com.myproject.repository.PlantDetailRepository;
 import com.myproject.repository.PlantRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +18,10 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -25,6 +30,7 @@ import java.util.UUID;
 @Slf4j(topic = "FILE_SERVICE")
 public class FileService {
 
+    private final PlantDetailRepository plantDetailRepository;
     @Value("${app.file.download-prefix}")
     private String urlPrefix;
 
@@ -64,8 +70,43 @@ public class FileService {
         plant.setImage(secureUrl);
         plantRepository.save(plant);
 
+        PlantDetail plantDetail = plantDetailRepository.findByPlantId(plantId)
+                .orElseThrow(() -> new ResourceNotFoundException("Plant information not found with id: " + plantId));
+
+        plantDetail.setImageSource(secureUrl);
+        plantDetailRepository.save(plantDetail);
+
         return urlPrefix + plantId;
     }
+
+//    public FileData download(Long plantId) throws IOException {
+//        log.info("Downloading file for plant: {}", plantId);
+//
+//        Plant plant = plantRepository.findById(plantId)
+//                .orElseThrow(() -> new ResourceNotFoundException("Plant not found with id: " + plantId));
+//
+//        if (!StringUtils.hasText(plant.getImage())) {
+//            throw new ResourceNotFoundException("File not found for plant id: " + plantId);
+//        }
+//
+//        // The image field now contains the full Cloudinary URL
+//        String cloudinaryUrl = plant.getImage();
+//
+//        // Determine content type based on file extension
+//        String extension = cloudinaryUrl.substring(cloudinaryUrl.lastIndexOf(".") + 1);
+//        String contentType = extension != null && !extension.isEmpty()
+//                ? "image/" + extension.toLowerCase()
+//                : "application/octet-stream";
+//
+//        // Fetch file content with error handling
+//        try {
+//            byte[] data = new URL(cloudinaryUrl).openStream().readAllBytes();
+//            return new FileData(contentType, new ByteArrayResource(data));
+//        } catch (IOException e) {
+//            log.error("Failed to download file from Cloudinary: {}", cloudinaryUrl, e);
+//            throw new ResourceNotFoundException("Failed to download file for plant id: " + plantId);
+//        }
+//    }
 
     public FileData download(Long plantId) throws IOException {
         log.info("Downloading file for plant: {}", plantId);
@@ -77,22 +118,100 @@ public class FileService {
             throw new ResourceNotFoundException("File not found for plant id: " + plantId);
         }
 
-        // The image field now contains the full Cloudinary URL
-        String cloudinaryUrl = plant.getImage();
+        String imageUrl = plant.getImage();
+        log.info("Fetching image from URL: {}", imageUrl);
 
-        // Determine content type based on file extension
-        String extension = cloudinaryUrl.substring(cloudinaryUrl.lastIndexOf(".") + 1);
-        String contentType = extension != null && !extension.isEmpty()
-                ? "image/" + extension.toLowerCase()
-                : "application/octet-stream";
-
-        // Fetch file content with error handling
+        HttpURLConnection connection = null;
         try {
-            byte[] data = new URL(cloudinaryUrl).openStream().readAllBytes();
+            URL url = new URL(imageUrl);
+            connection = (HttpURLConnection) url.openConnection();
+            // Thêm tiêu đề HTTP để giả lập trình duyệt
+            connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
+            connection.setRequestMethod("GET");
+            connection.setConnectTimeout(5000); // Timeout 5 giây
+            connection.setReadTimeout(5000);
+            connection.setInstanceFollowRedirects(true); // Tự động theo chuyển hướng
+
+            // Kiểm tra mã trạng thái HTTP
+            int responseCode = connection.getResponseCode();
+            if (responseCode != HttpURLConnection.HTTP_OK) {
+                throw new IOException("HTTP error code: " + responseCode);
+            }
+
+            // Kiểm tra Content-Type
+            String contentType = connection.getContentType();
+            List<String> validImageTypes = Arrays.asList("image/jpeg", "image/png", "image/gif", "image/webp");
+            if (contentType == null || !validImageTypes.contains(contentType.toLowerCase())) {
+                log.error("Invalid content type: {} for URL: {}", contentType, imageUrl);
+                throw new ResourceNotFoundException("URL does not point to a valid image for plant id: " + plantId);
+            }
+
+            // Đọc dữ liệu hình ảnh
+            byte[] data = connection.getInputStream().readAllBytes();
+            if (data.length == 0) {
+                throw new IOException("Empty response from URL: " + imageUrl);
+            }
+
+            // Sử dụng Content-Type từ phản hồi thay vì dựa vào phần mở rộng
             return new FileData(contentType, new ByteArrayResource(data));
+
         } catch (IOException e) {
-            log.error("Failed to download file from Cloudinary: {}", cloudinaryUrl, e);
+            log.error("Failed to download file from URL: {}", imageUrl, e);
             throw new ResourceNotFoundException("Failed to download file for plant id: " + plantId);
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteFile(Long plantId) throws IOException {
+        log.info("Attempting to delete file for plant: {}", plantId);
+
+        Plant plant = plantRepository.findById(plantId)
+                .orElseThrow(() -> new ResourceNotFoundException("Plant not found with id: " + plantId));
+
+        if (!StringUtils.hasText(plant.getImage())) {
+            log.info("No image found for plant id: {}", plantId);
+            return;
+        }
+
+        String imageUrl = plant.getImage();
+        log.info("Checking image URL: {}", imageUrl);
+
+        // Kiểm tra xem URL có thuộc Cloudinary không
+        String cloudinaryDomain = "res.cloudinary.com/dhk08b5s3";
+        if (!imageUrl.contains(cloudinaryDomain)) {
+            log.info("Image URL {} is not from Cloudinary, skipping deletion", imageUrl);
+            return;
+        }
+
+        // Trích xuất public_id từ URL
+        String publicId = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+        if (publicId.contains(".")) {
+            publicId = publicId.substring(0, publicId.lastIndexOf("."));
+        }
+
+        try {
+            // Xóa file trên Cloudinary
+            Map deleteResult = cloudinary.uploader().destroy(publicId, ObjectUtils.asMap("resource_type", "image"));
+            log.info("Delete result from Cloudinary: {}", deleteResult);
+
+            // Xóa URL khỏi cơ sở dữ liệu
+            plant.setImage(null);
+            plantRepository.save(plant);
+
+            PlantDetail plantDetail = plantDetailRepository.findByPlantId(plantId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Plant information not found with id: " + plantId));
+            plantDetail.setImageSource(null);
+            plantDetailRepository.save(plantDetail);
+
+            log.info("Successfully deleted image for plant id: {}", plantId);
+
+        } catch (Exception e) {
+            log.error("Failed to delete file from Cloudinary for plant id: {}, public_id: {}", plantId, publicId, e);
+            throw new IOException("Failed to delete file for plant id: " + plantId, e);
         }
     }
 }

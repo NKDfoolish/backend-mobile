@@ -6,6 +6,7 @@ import com.myproject.dto.request.UserCreationRequest;
 import com.myproject.dto.request.UserPasswordRequest;
 import com.myproject.dto.request.UserUpdateRequest;
 import com.myproject.dto.response.UserResponse;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/mockup/user")
 @Tag(name = "Mockup User Controller", description = "User Controller")
+@Hidden
 public class MockupUserController {
 
     @Operation(summary = "Get list user", description = "API retrieve list of user")

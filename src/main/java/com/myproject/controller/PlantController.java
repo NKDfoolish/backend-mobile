@@ -5,6 +5,7 @@ import com.myproject.dto.request.PlantUpdateRequest;
 import com.myproject.dto.response.ApiResponse;
 import com.myproject.dto.response.PlantResponse;
 import com.myproject.service.PlantService;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -55,6 +56,7 @@ public class PlantController {
                 .build();
     }
 
+    @Hidden
     @Operation(summary = "Create plant", description = "API create new plant")
     @PostMapping("/add")
     public ApiResponse createPlant(@RequestBody @Valid PlantCreationRequest req) {
@@ -67,6 +69,7 @@ public class PlantController {
                 .build();
     }
 
+    @Hidden
     @Operation(summary = "Update plant", description = "API update plant")
     @PutMapping("/upd")
     public ApiResponse updatePlant(@RequestBody @Valid PlantUpdateRequest req) {
@@ -80,6 +83,7 @@ public class PlantController {
                 .build();
     }
 
+    @Hidden
     @Operation(summary = "Delete plant", description = "API delete plant by id")
     @DeleteMapping("/del/{plantId}")
     public ApiResponse deletePlant(@PathVariable @Min(value = 1, message = "PlantId must be equal or greater than 1") Long plantId) {

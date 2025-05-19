@@ -55,4 +55,4 @@ cloudinary:
   api-secret: ${CLOUDINARY_API_SECRET}
 app:
   file:
-    download-prefix: http://localhost:8080/file/download/plant/
+    download-prefix: ${DOWNLOAD_PREFIX}

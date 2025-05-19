@@ -9,12 +9,14 @@ import com.myproject.model.Plant;
 import com.myproject.model.PlantDetail;
 import com.myproject.repository.PlantDetailRepository;
 import com.myproject.repository.PlantRepository;
+import com.myproject.service.FileService;
 import com.myproject.service.PlantDetailService;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.io.IOException;
 
 @Service
 @Slf4j(topic = "PLANT_DETAIL_SERVICE")
@@ -23,6 +25,7 @@ public class PlantDetailServiceImpl implements PlantDetailService {
 
     private final PlantRepository plantRepository;
     private final PlantDetailRepository plantDetailRepository;
+    private final FileService fileService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -123,11 +126,14 @@ public class PlantDetailServiceImpl implements PlantDetailService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void delete(Long plantId) {
+    public void delete(Long plantId) throws IOException {
         log.info("delete plant detail: {}", plantId);
 
         Plant plant = getPlantEntity(plantId);
         PlantDetail plantDetail = getPlantDetailByPlantId(plantId);
+
+        fileService.deleteFile(plantId);
+
         plantRepository.delete(plant);
         plantDetailRepository.delete(plantDetail);
         log.info("delete plant detail successfully");

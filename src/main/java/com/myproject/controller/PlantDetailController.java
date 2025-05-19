@@ -15,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping("/plant/detail")
 @Tag(name = "Plant Detail Controller", description = "Plant Detail Controller")
@@ -66,7 +68,7 @@ public class PlantDetailController {
 
     @Operation(summary = "Delete plant & information", description = "API delete plant & information by plant id")
     @DeleteMapping("/del/{plantId}")
-    public ApiResponse deletePlant(@PathVariable @Min(value = 1, message = "PlantId must be equal or greater than 1") Long plantId) {
+    public ApiResponse deletePlant(@PathVariable @Min(value = 1, message = "PlantId must be equal or greater than 1") Long plantId) throws IOException {
         log.info("Delete plant {}", plantId);
 
         plantDetailService.delete(plantId);

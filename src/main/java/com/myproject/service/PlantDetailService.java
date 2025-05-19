@@ -4,6 +4,8 @@ import com.myproject.dto.request.PlantDetailRequest;
 import com.myproject.dto.request.PlantDetailUpdateRequest;
 import com.myproject.dto.response.PlantDetailResponse;
 
+import java.io.IOException;
+
 public interface PlantDetailService {
 
     String save(PlantDetailRequest req);
@@ -12,5 +14,5 @@ public interface PlantDetailService {
 
     void update(PlantDetailUpdateRequest req);
 
-    void delete(Long plantId);
+    void delete(Long plantId) throws IOException;
 }
