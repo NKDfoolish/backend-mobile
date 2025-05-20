@@ -4,6 +4,7 @@ import com.myproject.dto.response.ApiResponse;
 import com.myproject.dto.request.SignInRequest;
 import com.myproject.dto.response.TokenResponse;
 import com.myproject.service.AuthenticationService;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ public class AuthenticationController {
         return authenticationService.getAccessToken(request);
     }
 
+    @Hidden
     @Operation(summary = "Refresh token", description = "Get new access token by refresh token")
     @PostMapping("/refresh-token")
     public TokenResponse getRefreshToken(@RequestBody String refreshToken) {
@@ -38,6 +40,7 @@ public class AuthenticationController {
         return authenticationService.getRefreshToken(refreshToken);
     }
 
+    @Hidden
     @Operation(summary = "Forgot password", description = "Send email to reset password")
     @PostMapping("/forgot-password")
     public ApiResponse forgotPassword(@RequestBody String email) {

@@ -6,6 +6,7 @@ import com.myproject.dto.request.UserPasswordRequest;
 import com.myproject.dto.request.UserUpdateRequest;
 import com.myproject.dto.response.UserResponse;
 import com.myproject.service.UserService;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
@@ -30,6 +31,7 @@ public class UserController {
 
     private final UserService userService;
 
+    @Hidden
     @Operation(summary = "Get list user", description = "API retrieve list of user")
     @GetMapping("/list")
     @PreAuthorize("hasAnyAuthority('manager', 'admin', 'sysadmin')")
@@ -62,6 +64,7 @@ public class UserController {
                 .build();
     }
 
+    @Hidden
     @GetMapping("/confirm-email")
     public void confirmEmail(@RequestParam String secretCode, HttpServletResponse response) throws IOException {
         log.info("Confirm email {}", secretCode);
@@ -113,6 +116,7 @@ public class UserController {
                 .build();
     }
 
+    @Hidden
     @Operation(summary = "Delete user", description = "API delete user by id")
     @DeleteMapping("/del/{userId}")
     @PreAuthorize("hasAuthority('admin')")

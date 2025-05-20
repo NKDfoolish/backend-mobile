@@ -10,9 +10,9 @@ spring:
     add-properties: true
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://${DATABASE_HOST:localhost}:${DATABASE_PORT:5432}/postgres
-    username: ${DB_USER}
-    password: ${DB_PASSWORD}
+    url: jdbc:postgresql://${PGHOST}/${PGDATABASE}
+    username: ${PGUSER}
+    password: ${PGPASSWORD}
   jpa:
     properties:
       hibernate:
@@ -27,7 +27,8 @@ spring:
     verification-link: ${SENDGRID_VERIFICATION_LINK}
   data:
     mongodb:
-      uri: mongodb://${MONGO_USER:khanhduy}:${MONGO_PASSWORD:khanhduy}@${MONGO_HOST:localhost}:${MONGO_PORT:27017}/${MONGO_DB:plantdb}?authSource=admin
+      uri: mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_HOST}/?retryWrites=true&w=majority
+      database: ${MONGO_DB}
       auto-index-creation: true
 
 # application-dev.yml

@@ -1,6 +1,7 @@
 package com.myproject.controller;
 
 import com.myproject.service.EmailService;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +24,7 @@ public class EmailController {
         log.info("Email sent successfully!");
     }
 
+    @Hidden
     @GetMapping("/verify-email")
     public void sendEmail(@RequestParam String toEmail,@RequestParam String name) throws IOException {
         log.info("Sending email verification to: {}", toEmail);
