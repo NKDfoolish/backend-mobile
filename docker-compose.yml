@@ -31,23 +31,33 @@ services:
       - default
 
   backend-service:
-    container_name: backend-service
-#    image: duyfoolish/backend-service:latest
-    build:
-      context: ./
-      dockerfile: Dockerfile
+    container_name: smartgarden
+    image: duyfoolish/smart-garden:latest
     ports:
       - "8088:8088"
     env_file:
       - .env
-    environment:
-      DATABASE_HOST: host.docker.internal
-      DATABASE_PORT: 5432
-      LOGSTASH_HOST: host.docker.internal:5600
-    depends_on:
-      - postgres
     networks:
       - default
+
+#  backend-service:
+#    container_name: backend-service
+#    #    image: duyfoolish/backend-service:latest
+#    build:
+#      context: ./
+#      dockerfile: Dockerfile
+#    ports:
+#      - "8088:8088"
+#    env_file:
+#      - .env
+#    environment:
+#      DATABASE_HOST: host.docker.internal
+#      DATABASE_PORT: 5432
+#      LOGSTASH_HOST: host.docker.internal:5600
+#    depends_on:
+#      - postgres
+#    networks:
+#      - default
 
   elastic-search:
     image: elasticsearch:7.14.1
