@@ -32,7 +32,10 @@ services:
 
   backend-service:
     container_name: smartgarden
-    image: duyfoolish/smart-garden:latest
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: smart-garden:latest
     ports:
       - "8088:8088"
     env_file:
@@ -154,8 +157,6 @@ services:
       /bin/bash -c "apt-get update &&
                     apt-get install -y docker.io &&
                     exec /usr/local/bin/jenkins.sh"
-  
-  
 
   sonarqube:
     image: sonarqube:community

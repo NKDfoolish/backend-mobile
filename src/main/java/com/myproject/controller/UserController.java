@@ -31,7 +31,6 @@ public class UserController {
 
     private final UserService userService;
 
-    @Hidden
     @Operation(summary = "Get list user", description = "API retrieve list of user")
     @GetMapping("/list")
     @PreAuthorize("hasAnyAuthority('manager', 'admin', 'sysadmin')")
@@ -51,7 +50,7 @@ public class UserController {
 
     @Operation(summary = "Get user detail", description = "API retrieve user detail by id")
     @GetMapping("/{userId}")
-    @PreAuthorize("hasAuthority('user')")
+    @PreAuthorize("hasAuthority('sysadmin')")
     public ApiResponse getUserDetail(@PathVariable @Min(value = 1, message = "UserId must be equal or greater than 1") Long userId) {
         log.info("Get user detail {}", userId);
 

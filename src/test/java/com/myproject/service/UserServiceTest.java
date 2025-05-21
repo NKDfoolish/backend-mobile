@@ -77,10 +77,10 @@ class UserServiceTest {
 
     }
 
-    @BeforeEach
-    void setUp() {
-        userService = new UserServiceImpl(userRepository,addressRepository,passwordEncoder,emailService);
-    }
+//    @BeforeEach
+//    void setUp() {
+//        userService = new UserServiceImpl(userRepository,addressRepository,passwordEncoder,emailService);
+//    }
 
     @Test
     void testGetListUsers_Success() {

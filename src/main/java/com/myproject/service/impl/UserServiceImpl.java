@@ -9,8 +9,12 @@ import com.myproject.dto.response.UserResponse;
 import com.myproject.exception.InvalidDataException;
 import com.myproject.exception.ResourceNotFoundException;
 import com.myproject.model.AddressEntity;
+import com.myproject.model.Role;
 import com.myproject.model.UserEntity;
+import com.myproject.model.UserHasRole;
 import com.myproject.repository.AddressRepository;
+import com.myproject.repository.RoleRepository;
+import com.myproject.repository.UserHasRoleRepository;
 import com.myproject.repository.UserRepository;
 import com.myproject.service.EmailService;
 import com.myproject.service.UserService;
@@ -39,7 +43,9 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final AddressRepository addressRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RoleRepository roleRepository;
     private final EmailService emailService;
+    private final UserHasRoleRepository userHasRoleRepository;
 
     @Override
     public UserPageResponse findAll(String keyword, String sort, int page, int size) {
@@ -125,10 +131,13 @@ public class UserServiceImpl implements UserService {
         user.setGender(req.getGender());
         user.setBirthday(req.getBirthday());
         user.setUsername(req.getUsername());
+        user.setPassword(passwordEncoder.encode(req.getPassword()));
         user.setEmail(req.getEmail());
         user.setPhone(req.getPhone());
         user.setType(req.getType());
-        user.setStatus(UserStatus.NONE);
+        user.setStatus(UserStatus.ACTIVE);
+
+
 
         UserEntity result = userRepository.save(user);
         log.info("User saved: {}", user);
@@ -153,6 +162,16 @@ public class UserServiceImpl implements UserService {
             addressRepository.saveAll(addresses);
             log.info("Addresses saved: {}", addresses);
         }
+
+        // set roles
+        UserHasRole userHasRole = new UserHasRole();
+        userHasRole.setUser(user);
+
+        // role user default
+        Role userRole = roleRepository.findByName("user");
+        userHasRole.setRole(userRole);
+
+        userHasRoleRepository.save(userHasRole);
 
         // Send email verification
         try {

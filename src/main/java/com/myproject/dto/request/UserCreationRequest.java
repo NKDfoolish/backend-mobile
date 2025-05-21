@@ -26,6 +26,9 @@ public class UserCreationRequest implements Serializable {
     private Date birthday;
     private String username;
 
+    @NotBlank(message = "Password is required")
+    private String password;
+
     @Email(message = "Email should be valid")
     private String email;
     private String phone;
