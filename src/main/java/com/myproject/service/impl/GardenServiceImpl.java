@@ -5,6 +5,7 @@ import com.myproject.dto.request.GardenUpdateRequest;
 import com.myproject.dto.response.AreaResponse;
 import com.myproject.dto.response.GardenPageResponse;
 import com.myproject.dto.response.GardenResponse;
+import com.myproject.exception.ForBiddenException;
 import com.myproject.exception.InvalidDataException;
 import com.myproject.exception.ResourceNotFoundException;
 import com.myproject.model.Area;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -63,12 +65,17 @@ public class GardenServiceImpl implements GardenService {
 
         Page<Garden> entityPage;
 
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        UserEntity user = userRepository.findByUsername(username);
+
+
+
         if (StringUtils.hasLength(keyword)){
             // call search method
             keyword = "%" + keyword.toLowerCase() + "%";
-            entityPage = gardenRepository.searchByKeyword(keyword, pageable);
+            entityPage = gardenRepository.searchByKeyword(keyword, pageable, user);
         } else {
-            entityPage = gardenRepository.findAll(pageable);
+            entityPage = gardenRepository.searchByUser(pageable, user);
         }
 
         return getGardenPageResponse(page, size, entityPage);
@@ -79,6 +86,12 @@ public class GardenServiceImpl implements GardenService {
         log.info("Find garden by id {}", id);
 
         Garden garden =  getGardenEntity(id);
+
+        UserEntity userCheck = (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (!garden.getUser().getId().equals(userCheck.getId())){
+            throw new ForBiddenException("You are not allowed to access this garden");
+        }
 
         return GardenResponse.builder()
                 .id(id)
@@ -118,8 +131,13 @@ public class GardenServiceImpl implements GardenService {
     public void update(GardenUpdateRequest req) {
         log.info("Update garden {}", req);
 
-        // Get vase by id
         Garden garden =  getGardenEntity(req.getId());
+
+        UserEntity userCheck = (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (!garden.getUser().getId().equals(userCheck.getId())){
+            throw new ForBiddenException("You are not allowed to access this garden");
+        }
 
         if (req.getGardenName() != null) {
             garden.setGardenName(req.getGardenName());
@@ -139,6 +157,13 @@ public class GardenServiceImpl implements GardenService {
         log.info("Delete garden {}", gardenId);
 
         Garden garden = getGardenEntity(gardenId);
+
+        UserEntity userCheck = (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (!garden.getUser().getId().equals(userCheck.getId())){
+            throw new ForBiddenException("You are not allowed to access this garden");
+        }
+
         gardenRepository.delete(garden);
         log.info("Garden deleted: {}", garden);
     }

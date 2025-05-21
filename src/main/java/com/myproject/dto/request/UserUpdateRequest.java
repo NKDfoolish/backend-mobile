@@ -17,10 +17,7 @@ public class UserUpdateRequest {
     @NotNull(message = "Id is required")
     private Long id;
 
-    @NotBlank(message = "First name is required")
     private String firstName;
-
-    @NotBlank(message = "Last name is required")
     private String lastName;
 
     @Email(message = "Email should be valid")

@@ -4,6 +4,7 @@ import com.myproject.dto.request.GardenCreationRequest;
 import com.myproject.dto.request.GardenUpdateRequest;
 import com.myproject.dto.response.ApiResponse;
 import com.myproject.dto.response.GardenResponse;
+import com.myproject.model.UserEntity;
 import com.myproject.service.GardenService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -12,6 +13,7 @@ import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +35,9 @@ public class GardenController {
                                @RequestParam(defaultValue = "20") int size) {
 
         log.info("Get list garden");
+
+        UserEntity user = (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        log.info("user info email: " + user.getEmail() + "; id: " + user.getId());
 
         return ApiResponse.builder()
                 .status(HttpStatus.OK.value())

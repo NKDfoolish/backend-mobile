@@ -190,41 +190,61 @@ public class UserServiceImpl implements UserService {
         // Get user by id
         UserEntity user = getUserEntity(req.getId());
         // set data
-        user.setFirstName(req.getFirstName());
-        user.setLastName(req.getLastName());
-        user.setGender(req.getGender());
-        user.setBirthday(req.getBirthday());
-        user.setUsername(req.getUsername());
-        user.setEmail(req.getEmail());
-        user.setPhone(req.getPhone());
+        if (req.getFirstName() != null) {
+            user.setFirstName(req.getFirstName());
+        }
+
+        if (req.getLastName() != null) {
+            user.setLastName(req.getLastName());
+        }
+
+        if (req.getEmail() != null) {
+            user.setEmail(req.getEmail());
+        }
+
+        if (req.getGender() != null){
+            user.setGender(req.getGender());
+        }
+
+        if (req.getBirthday() != null){
+            user.setBirthday(req.getBirthday());
+        }
+        if (req.getPhone() != null){
+            user.setPhone(req.getPhone());
+        }
+
+        if (req.getUsername() != null){
+            user.setUsername(req.getUsername());
+        }
         // save to db
         userRepository.save(user);
         log.info("User updated: {}", user);
 
-        // Save address
-        List<AddressEntity> addresses = new ArrayList<>();
+        if (req.getAddresses() != null){
+            // Save address
+            List<AddressEntity> addresses = new ArrayList<>();
 
-        req.getAddresses().forEach(address -> {
-            AddressEntity addressEntity = addressRepository.findByUserIdAndAddressType(user.getId(), address.getAddressType());
+            req.getAddresses().forEach(address -> {
+                AddressEntity addressEntity = addressRepository.findByUserIdAndAddressType(user.getId(), address.getAddressType());
 
-            if (addressEntity == null) {
-                addressEntity = new AddressEntity();
-            }
+                if (addressEntity == null) {
+                    addressEntity = new AddressEntity();
+                }
 
-            addressEntity.setApartmentNumber(address.getApartmentNumber());
-            addressEntity.setStreet(address.getStreet());
-            addressEntity.setStreetNumber(address.getStreetNumber());
-            addressEntity.setCity(address.getCity());
-            addressEntity.setCountry(address.getCountry());
-            addressEntity.setFloor(address.getFloor());
-            addressEntity.setBuilding(address.getBuilding());
-            addressEntity.setAddressType(address.getAddressType());
-            addressEntity.setUserId(user.getId());
+                addressEntity.setApartmentNumber(address.getApartmentNumber());
+                addressEntity.setStreet(address.getStreet());
+                addressEntity.setStreetNumber(address.getStreetNumber());
+                addressEntity.setCity(address.getCity());
+                addressEntity.setCountry(address.getCountry());
+                addressEntity.setFloor(address.getFloor());
+                addressEntity.setBuilding(address.getBuilding());
+                addressEntity.setAddressType(address.getAddressType());
+                addressEntity.setUserId(user.getId());
 
-            addresses.add(addressEntity);
-        });
-        addressRepository.saveAll(addresses);
-
+                addresses.add(addressEntity);
+            });
+            addressRepository.saveAll(addresses);
+        }
     }
 
     @Override

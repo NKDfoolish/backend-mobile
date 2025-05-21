@@ -50,7 +50,7 @@ public class UserController {
 
     @Operation(summary = "Get user detail", description = "API retrieve user detail by id")
     @GetMapping("/{userId}")
-    @PreAuthorize("hasAuthority('sysadmin')")
+    @PreAuthorize("#userId == authentication.principal.id or hasAnyAuthority('manager', 'admin', 'sysadmin')")
     public ApiResponse getUserDetail(@PathVariable @Min(value = 1, message = "UserId must be equal or greater than 1") Long userId) {
         log.info("Get user detail {}", userId);
 
@@ -91,6 +91,8 @@ public class UserController {
 
     @Operation(summary = "Update user", description = "API update user by id")
     @PutMapping("/upd")
+    @PreAuthorize("#request.id == authentication.principal.id or " +
+            "hasAnyAuthority('admin', 'sysadmin', 'manager')")
     public ApiResponse updateUser(@RequestBody @Valid UserUpdateRequest request) {
         log.info("Update user {}", request);
 
@@ -104,6 +106,8 @@ public class UserController {
 
     @Operation(summary = "Change password", description = "API change password by id")
     @PatchMapping("/change-pwd")
+    @PreAuthorize("#request.id == authentication.principal.id or " +
+            "hasAnyAuthority('admin', 'sysadmin', 'manager')")
     public ApiResponse changePassword(@RequestBody @Valid UserPasswordRequest request) {
         log.info("Change password {}", request);
 
@@ -115,10 +119,9 @@ public class UserController {
                 .build();
     }
 
-    @Hidden
     @Operation(summary = "Delete user", description = "API delete user by id")
     @DeleteMapping("/del/{userId}")
-    @PreAuthorize("hasAuthority('admin')")
+    @PreAuthorize("hasAnyAuthority('manager', 'admin', 'sysadmin')")
     public ApiResponse deleteUser(@PathVariable @Min(value = 1, message = "UserId must be equal or greater than 1") Long userId) {
         log.info("Delete user {}", userId);
 
