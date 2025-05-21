@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Set;
+
 @Repository
 public interface GardenRepository extends JpaRepository<Garden, Integer> {
 
@@ -20,4 +22,8 @@ public interface GardenRepository extends JpaRepository<Garden, Integer> {
     @Query(value = "select g from Garden g " +
             "where g.user = :user")
     Page<Garden> searchByUser(Pageable pageable, UserEntity user);
+
+    @Query(value = "select g from Garden g " +
+            "where g.user = :user")
+    Set<Garden> findByUser(UserEntity user);
 }

@@ -12,6 +12,4 @@ public class GardenUpdateRequest {
     private Integer id;
 
     private String gardenName;
-
-    private Long userId;
 }

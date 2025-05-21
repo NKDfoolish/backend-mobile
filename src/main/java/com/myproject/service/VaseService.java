@@ -4,8 +4,6 @@ import com.myproject.dto.request.VaseCreationRequest;
 import com.myproject.dto.request.VaseUpdateRequest;
 import com.myproject.dto.response.VasePageResponse;
 import com.myproject.dto.response.VaseResponse;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
 
 public interface VaseService {
 

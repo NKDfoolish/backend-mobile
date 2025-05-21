@@ -13,7 +13,5 @@ public class VaseUpdateRequest {
 
     private String vaseName;
 
-    private Integer areaId;
-
     private Long plantId;
 }

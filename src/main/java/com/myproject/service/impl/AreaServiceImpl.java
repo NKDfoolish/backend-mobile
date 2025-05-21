@@ -7,8 +7,10 @@ import com.myproject.exception.InvalidDataException;
 import com.myproject.exception.ResourceNotFoundException;
 import com.myproject.model.Area;
 import com.myproject.model.Garden;
+import com.myproject.model.UserEntity;
 import com.myproject.repository.AreaRepository;
 import com.myproject.repository.GardenRepository;
+import com.myproject.repository.UserRepository;
 import com.myproject.service.AreaService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,11 +18,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,6 +35,7 @@ public class AreaServiceImpl implements AreaService {
 
     private final AreaRepository areaRepository;
     private final GardenRepository gardenRepository;
+    private final UserRepository userRepository;
 
     @Override
     public AreaPageResponse findAll(String keyword, String sort, int page, int size) {
@@ -60,12 +65,15 @@ public class AreaServiceImpl implements AreaService {
 
         Page<Area> entityPage;
 
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        UserEntity user = userRepository.findByUsername(username);
+
         if (StringUtils.hasLength(keyword)){
             // call search method
             keyword = "%" + keyword.toLowerCase() + "%";
-            entityPage = areaRepository.searchByKeyword(keyword, pageable);
+            entityPage = areaRepository.searchByKeyword(keyword, pageable, user);
         } else {
-            entityPage = areaRepository.findAll(pageable);
+            entityPage = areaRepository.searchByGarden(pageable, user);
         }
 
         return getAreaPageResponse(page, size, entityPage);
@@ -90,6 +98,23 @@ public class AreaServiceImpl implements AreaService {
     @Transactional(rollbackFor = Exception.class)
     public Integer save(AreaCreationRequest req) {
         log.info("Save area {}", req);
+
+        UserEntity userCheck =  (UserEntity)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Set<Garden> gardens = gardenRepository.findByUser(userCheck);
+
+        log.info("gardens: {}", gardens.toString());
+
+        boolean gardenValid = false;
+        for (Garden garden : gardens){
+            if (garden.getId().equals(req.getGardenId())){
+                log.info("Garden id {} is valid", req.getGardenId());
+                gardenValid = true;
+                break;
+            }
+        }
+        if (!gardenValid){
+            throw new InvalidDataException("Garden id " + req.getGardenId() + " is not valid");
+        }
 
         Area existingArea = areaRepository.findByAreaName(req.getAreaName());
         if (existingArea != null) {
@@ -122,11 +147,6 @@ public class AreaServiceImpl implements AreaService {
             area.setAreaName(req.getAreaName());
         }
 
-        if (req.getGardenId() != null) {
-            Garden garden = getGardenById(req.getGardenId());
-            area.setGarden(garden);
-        }
-
         areaRepository.save(area);
         log.info("Area updated: {}", area);
     }
@@ -146,7 +166,10 @@ public class AreaServiceImpl implements AreaService {
     }
 
     private Area getAreaEntity(Integer id) {
-        return areaRepository.findById(id)
+
+        UserEntity userCheck = (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        return areaRepository.findByUser(id, userCheck)
                 .orElseThrow(() -> new ResourceNotFoundException("Area not found"));
     }
 

@@ -12,6 +12,4 @@ public class AreaUpdateRequest {
     private Integer id;
 
     private String areaName;
-
-    private Integer gardenId;
 }

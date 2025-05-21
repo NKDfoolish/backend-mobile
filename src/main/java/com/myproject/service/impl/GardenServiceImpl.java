@@ -143,11 +143,6 @@ public class GardenServiceImpl implements GardenService {
             garden.setGardenName(req.getGardenName());
         }
 
-        if (req.getUserId() != null) {
-            UserEntity user = getUserById(req.getUserId());
-            garden.setUser(user);
-        }
-
         gardenRepository.save(garden);
         log.info("Garden updated: {}", garden);
     }
