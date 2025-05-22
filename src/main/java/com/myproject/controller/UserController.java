@@ -5,6 +5,7 @@ import com.myproject.dto.request.UserCreationRequest;
 import com.myproject.dto.request.UserPasswordRequest;
 import com.myproject.dto.request.UserUpdateRequest;
 import com.myproject.dto.response.UserResponse;
+import com.myproject.model.UserEntity;
 import com.myproject.service.UserService;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,6 +57,22 @@ public class UserController {
         log.info("Get user detail {}", userId);
 
         UserResponse userResponse = userService.findById(userId);
+
+        return ApiResponse.builder()
+                .status(HttpStatus.OK.value())
+                .message("user")
+                .data(userResponse)
+                .build();
+    }
+
+    @Operation(summary = "Get myinfo", description = "API retrieve user info by id")
+    @GetMapping("/myinfo")
+    public ApiResponse getMyInfo() {
+        log.info("Get user information");
+
+        UserEntity userCheck = (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        UserResponse userResponse = userService.findById(userCheck.getId());
 
         return ApiResponse.builder()
                 .status(HttpStatus.OK.value())
