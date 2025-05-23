@@ -13,8 +13,7 @@ import java.util.Optional;
 public interface PlantRepository extends JpaRepository<Plant, Long> {
     
     @Query(value = "select p from Plant p " +
-            "where (lower(p.plantName) like :keyword " +
-            "or lower(p.description) like :keyword)")
+            "where (lower(p.plantName) like :keyword )")
     Page<Plant> searchByKeyword(String keyword, Pageable pageable);
 
     Plant findByPlantName(String plantName);

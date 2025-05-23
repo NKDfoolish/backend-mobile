@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.ConstraintViolationException;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -264,5 +265,142 @@ public class GlobalExceptionHandling {
         private String path;
         private String error;
         private String message;
+    }
+
+    /**
+     * Handle database constraint violations for all entities
+     *
+     * @param e
+     * @param request
+     * @return
+     */
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "409", description = "Conflict",
+                    content = {@Content(mediaType = APPLICATION_JSON_VALUE,
+                            examples = @ExampleObject(
+                                    name = "409 Response",
+                                    summary = "Handle database constraint violation errors",
+                                    value = """
+                                        {
+                                          "timestamp": "2023-10-19T06:07:35.321+00:00",
+                                          "status": 409,
+                                          "path": "/api/v1/...",
+                                          "error": "Conflict",
+                                          "message": "A record with this name already exists"
+                                        }
+                                        """
+                            ))})
+    })
+    public ErrorResponse handleDataIntegrityViolationException(DataIntegrityViolationException e, WebRequest request) {
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setTimestamp(new Date());
+        errorResponse.setPath(request.getDescription(false).replace("uri=", ""));
+        errorResponse.setStatus(CONFLICT.value());
+        errorResponse.setError(CONFLICT.getReasonPhrase());
+
+        String errorMessage = e.getMessage();
+        String userMessage;
+
+        if (errorMessage.contains("unique constraint") || errorMessage.contains("violates unique constraint")) {
+            // Extract constraint name and entity/field information
+            String constraintName = extractConstraintName(errorMessage);
+            String entityName = extractEntityName(constraintName);
+            String fieldName = extractFieldName(constraintName, errorMessage);
+
+            // Create user-friendly message
+            String entityDisplay = formatForDisplay(entityName);
+            String fieldDisplay = formatForDisplay(fieldName);
+
+            userMessage = String.format("A %s with this %s already exists. Please use a different value.",
+                    entityDisplay, fieldDisplay);
+        } else if (errorMessage.contains("foreign key constraint")) {
+            userMessage = "This operation violates database integrity rules. The referenced record may not exist or cannot be modified.";
+        } else {
+            userMessage = "Database constraint violation: The data you're trying to save violates database rules.";
+        }
+
+        errorResponse.setMessage(userMessage);
+        return errorResponse;
+    }
+
+    /**
+     * Extract constraint name from error message
+     */
+    private String extractConstraintName(String message) {
+        // For PostgreSQL errors
+        if (message.contains("constraint \"")) {
+            int startIndex = message.indexOf("constraint \"") + 12;
+            int endIndex = message.indexOf("\"", startIndex);
+            if (startIndex >= 12 && endIndex > startIndex) {
+                return message.substring(startIndex, endIndex);
+            }
+        }
+
+        // For generic errors
+        if (message.contains("constraint [")) {
+            int startIndex = message.indexOf("constraint [") + 12;
+            int endIndex = message.indexOf("]", startIndex);
+            if (startIndex >= 12 && endIndex > startIndex) {
+                return message.substring(startIndex, endIndex);
+            }
+        }
+
+        return "unknown";
+    }
+
+    /**
+     * Extract entity name from constraint name
+     */
+    private String extractEntityName(String constraintName) {
+        if (constraintName.contains("_")) {
+            String[] parts = constraintName.split("_");
+            if (parts.length >= 2) {
+                // For constraints like unique_vase_name, entity is "vase"
+                if (constraintName.startsWith("unique_")) {
+                    return parts[1];
+                }
+                // For constraints like tbl_vase_pkey, entity is "vase"
+                if (parts[0].equals("tbl")) {
+                    return parts[1];
+                }
+            }
+        }
+        return "record";
+    }
+
+    /**
+     * Extract field name from constraint
+     */
+    private String extractFieldName(String constraintName, String errorMessage) {
+        // Try to extract from constraint name
+        if (constraintName.startsWith("unique_") && constraintName.contains("_")) {
+            String[] parts = constraintName.split("_");
+            if (parts.length > 2) {
+                return parts[parts.length - 1];
+            }
+        }
+
+        // Try to extract from error message (PostgreSQL format)
+        if (errorMessage.contains("Detail: Key (") && errorMessage.contains(")=")) {
+            int startIndex = errorMessage.indexOf("Key (") + 5;
+            int endIndex = errorMessage.indexOf(")=", startIndex);
+            if (startIndex >= 5 && endIndex > startIndex) {
+                return errorMessage.substring(startIndex, endIndex);
+            }
+        }
+
+        return "value";
+    }
+
+    /**
+     * Format text for display (e.g., "vase_name" to "name", "area" to "area")
+     */
+    private String formatForDisplay(String text) {
+        // Convert snake_case to space separated words
+        if (text.contains("_")) {
+            return text.replace('_', ' ');
+        }
+        return text;
     }
 }

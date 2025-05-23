@@ -18,7 +18,7 @@ import java.util.Set;
 @Table(name = "tbl_plant")
 public class Plant extends AbstractEntity<Long> implements Serializable {
 
-    @Column(name = "plant_name", length = 255)
+    @Column(name = "plant_name", length = 255, unique = true, nullable = false)
     private String plantName;
 
     @Column(name = "image", length = 255)

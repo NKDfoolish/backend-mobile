@@ -13,7 +13,7 @@ import java.io.Serializable;
 @Table(name = "tbl_vase")
 public class Vase extends AbstractEntity<Integer> implements Serializable {
 
-    @Column(name = "vase_name", length = 255)
+    @Column(name = "vase_name", length = 255, unique = true, nullable = false)
     private String vaseName;
 
     @ManyToOne

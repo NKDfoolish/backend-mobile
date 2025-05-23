@@ -15,7 +15,7 @@ import java.util.Set;
 @Table(name = "tbl_area")
 public class Area extends AbstractEntity<Integer> implements Serializable {
     
-    @Column(name = "area_name", length = 255)
+    @Column(name = "area_name", length = 255, unique = true, nullable = false)
     private String areaName;
 
     @Column(name = "image", length = 255)

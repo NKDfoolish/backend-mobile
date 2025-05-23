@@ -15,7 +15,7 @@ import java.util.Set;
 @Table(name = "tbl_garden")
 public class Garden extends AbstractEntity<Integer> implements Serializable {
 
-    @Column(name = "garden_name", length = 255)
+    @Column(name = "garden_name", length = 255, unique = true, nullable = false)
     private String gardenName;
 
     @OneToMany(mappedBy = "garden")
