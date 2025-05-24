@@ -46,7 +46,7 @@ public class UserEntity extends AbstractEntity<Long> implements UserDetails, Ser
     @Column(name = "password", length = 255)
     private String password;
 
-    @Column(name = "email", length = 255)
+    @Column(name = "email", length = 255, unique = true, nullable = false)
     private String email;
 
     @Column(name = "phone", length = 15)

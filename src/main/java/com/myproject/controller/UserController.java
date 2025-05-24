@@ -91,7 +91,7 @@ public class UserController {
         } catch (Exception e) {
             log.error("Error confirm email!, errorMessage={}", e.getMessage());
         } finally {
-            response.sendRedirect("http://localhost:8080/login");
+            response.sendRedirect("http://localhost:8088/login");
         }
     }
 
