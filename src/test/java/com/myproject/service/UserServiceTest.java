@@ -12,6 +12,8 @@ import com.myproject.dto.response.UserResponse;
 import com.myproject.exception.ResourceNotFoundException;
 import com.myproject.model.UserEntity;
 import com.myproject.repository.AddressRepository;
+import com.myproject.repository.RoleRepository;
+import com.myproject.repository.UserHasRoleRepository;
 import com.myproject.repository.UserRepository;
 import com.myproject.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.BeforeAll;
@@ -43,6 +45,8 @@ class UserServiceTest {
     private @Mock EmailService emailService;
     private @Mock PasswordEncoder passwordEncoder;
     private @Mock AddressRepository addressRepository;
+    private @Mock RoleRepository roleRepository;
+    private @Mock UserHasRoleRepository userHasRoleRepository;
 
     private static UserEntity adela;
     private static UserEntity illiao;
@@ -77,10 +81,11 @@ class UserServiceTest {
 
     }
 
-//    @BeforeEach
-//    void setUp() {
-//        userService = new UserServiceImpl(userRepository,addressRepository,passwordEncoder,emailService);
-//    }
+    @BeforeEach
+    void setUp() {
+        userService = new UserServiceImpl(userRepository,addressRepository,passwordEncoder,roleRepository,
+                emailService, userHasRoleRepository);
+    }
 
     @Test
     void testGetListUsers_Success() {

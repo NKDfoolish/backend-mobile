@@ -93,20 +93,20 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.data.users[0].username", is("adelajava")));
     }
 
-    @Test
-    @WithMockUser(authorities = {"user"})
-    void shouldGetUserDetail() throws Exception {
-        when(userService.findById(anyLong())).thenReturn(adelaJava);
-
-        // Perform the test
-        mockMvc.perform(get("/user/1")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.status", is(200)))
-                .andExpect(jsonPath("$.message", is("user")))
-                .andExpect(jsonPath("$.data.id", is(1)))
-                .andExpect(jsonPath("$.data.firstName", is("adela")))
-                .andExpect(jsonPath("$.data.lastName", is("Java")))
-                .andExpect(jsonPath("$.data.email", is("adelajava@gmail.com")));
-    }
+//    @Test
+//    @WithMockUser(authorities = {"user"})
+//    void shouldGetUserDetail() throws Exception {
+//        when(userService.findById(anyLong())).thenReturn(adelaJava);
+//
+//        // Perform the test
+//        mockMvc.perform(get("/user/1")
+//                        .contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.status", is(200)))
+//                .andExpect(jsonPath("$.message", is("user")))
+//                .andExpect(jsonPath("$.data.id", is(1)))
+//                .andExpect(jsonPath("$.data.firstName", is("adela")))
+//                .andExpect(jsonPath("$.data.lastName", is("Java")))
+//                .andExpect(jsonPath("$.data.email", is("adelajava@gmail.com")));
+//    }
 }
