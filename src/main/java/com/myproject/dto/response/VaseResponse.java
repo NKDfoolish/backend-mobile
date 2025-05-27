@@ -15,6 +15,7 @@ import java.util.Date;
 public class VaseResponse implements Serializable {
     private Integer id;
     private String vaseName;
+    private Integer deviceId;
     private PlantResponse plant;
     private AreaResponse area;
     private Date createdAt;

@@ -14,6 +14,8 @@ public class VaseCreationRequest implements Serializable {
     @NotBlank(message = "Vase name is required")
     private String vaseName;
 
+    private Integer deviceId;
+
     private Integer areaId;
     private Long plantId;
 }

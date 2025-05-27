@@ -16,6 +16,9 @@ public class Vase extends AbstractEntity<Integer> implements Serializable {
     @Column(name = "vase_name", length = 255, unique = true, nullable = false)
     private String vaseName;
 
+    @Column(name = "device_id", unique = true, nullable = true)
+    private Integer deviceId;
+
     @ManyToOne
     @JoinColumn(name = "plant_id", nullable = true)
     private Plant plant;

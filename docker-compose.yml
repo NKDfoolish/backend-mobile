@@ -40,6 +40,8 @@ services:
       - "8088:8088"
     env_file:
       - .env
+    environment:
+      - LOGSTASH_HOST=logstash:5600
     networks:
       - default
 

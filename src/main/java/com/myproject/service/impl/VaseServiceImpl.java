@@ -94,6 +94,7 @@ public class VaseServiceImpl implements VaseService {
         return VaseResponse.builder()
                 .id(id)
                 .vaseName(vase.getVaseName())
+                .deviceId(vase.getDeviceId())
                 .plant(vase.getPlant() != null ? PlantResponse.builder()
                         .id(vase.getPlant().getId())
                         .plantName(vase.getPlant().getPlantName())
@@ -144,6 +145,10 @@ public class VaseServiceImpl implements VaseService {
         Vase vase = new Vase();
         vase.setVaseName(req.getVaseName());
 
+        if (req.getDeviceId() != null) {
+            vase.setDeviceId(req.getDeviceId());
+        }
+
         if (req.getPlantId() != null) {
             Plant plant = getPlantById(req.getPlantId());
             vase.setPlant(plant);
@@ -182,6 +187,10 @@ public class VaseServiceImpl implements VaseService {
             vase.setPlant(plant);
         }
 
+        if (req.getDeviceId() != null) {
+            vase.setDeviceId(req.getDeviceId());
+        }
+
         vaseRepository.save(vase);
         log.info("Vase updated: {}", vase);
     }
@@ -210,6 +219,7 @@ public class VaseServiceImpl implements VaseService {
                 .map(vase -> VaseResponse.builder()
                         .id(vase.getId())
                         .vaseName(vase.getVaseName())
+                        .deviceId(vase.getDeviceId())
                         .plant(vase.getPlant() != null ? PlantResponse.builder()
                                 .id(vase.getPlant().getId())
                                 .plantName(vase.getPlant().getPlantName())
