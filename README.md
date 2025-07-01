@@ -1,7 +1,7 @@
 # Project Architecture
 ![smart-garden.jpg](smart-garden.jpg)
 
-![Link FE](https://github.com/nntuananh123/FE_Smart_Garden.git)
+[Link FE](https://github.com/nntuananh123/FE_Smart_Garden.git)
 
 # 1. Prerequisite
 
