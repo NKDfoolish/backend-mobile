@@ -1,6 +1,8 @@
 # Project Architecture
 ![smart-garden.jpg](smart-garden.jpg)
 
+![Link FE](https://github.com/nntuananh123/FE_Smart_Garden.git)
+
 # 1. Prerequisite
 
 Cài đặt JDK 17+ nếu chưa thì cài đặt [JDK](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
