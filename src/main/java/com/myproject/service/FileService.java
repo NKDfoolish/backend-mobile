@@ -30,7 +30,7 @@ import java.util.UUID;
 @Slf4j(topic = "FILE_SERVICE")
 public class FileService {
 
-    private final PlantDetailRepository plantDetailRepository;
+//    private final PlantDetailRepository plantDetailRepository;
     @Value("${app.file.download-prefix}")
     private String urlPrefix;
 
@@ -70,11 +70,11 @@ public class FileService {
         plant.setImage(secureUrl);
         plantRepository.save(plant);
 
-        PlantDetail plantDetail = plantDetailRepository.findByPlantId(plantId)
-                .orElseThrow(() -> new ResourceNotFoundException("Plant information not found with id: " + plantId));
+//        PlantDetail plantDetail = plantDetailRepository.findByPlantId(plantId)
+//                .orElseThrow(() -> new ResourceNotFoundException("Plant information not found with id: " + plantId));
 
-        plantDetail.setImageSource(secureUrl);
-        plantDetailRepository.save(plantDetail);
+//        plantDetail.setImageSource(secureUrl);
+//        plantDetailRepository.save(plantDetail);
 
         return urlPrefix + plantId;
     }
@@ -202,10 +202,10 @@ public class FileService {
             plant.setImage(null);
             plantRepository.save(plant);
 
-            PlantDetail plantDetail = plantDetailRepository.findByPlantId(plantId)
-                    .orElseThrow(() -> new ResourceNotFoundException("Plant information not found with id: " + plantId));
-            plantDetail.setImageSource(null);
-            plantDetailRepository.save(plantDetail);
+//            PlantDetail plantDetail = plantDetailRepository.findByPlantId(plantId)
+//                    .orElseThrow(() -> new ResourceNotFoundException("Plant information not found with id: " + plantId));
+//            plantDetail.setImageSource(null);
+//            plantDetailRepository.save(plantDetail);
 
             log.info("Successfully deleted image for plant id: {}", plantId);
 

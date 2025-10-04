@@ -7,9 +7,13 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Getter
@@ -26,6 +30,17 @@ public class Plant extends AbstractEntity<Long> implements Serializable {
 
     @Column(name = "description", length = 255)
     private String description;
+
+    @Column(name = "title", length = 255)
+    private String title;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "table_data", columnDefinition = "jsonb")
+    private List<Map<String, String>> tableData;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "care_data", columnDefinition = "jsonb")
+    private List<Map<String, String>> careData;
 
     @OneToMany(mappedBy = "plant")
     @JsonIgnore

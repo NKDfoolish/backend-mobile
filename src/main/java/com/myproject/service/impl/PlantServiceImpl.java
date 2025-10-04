@@ -1,13 +1,17 @@
 package com.myproject.service.impl;
 
 import com.myproject.dto.request.PlantCreationRequest;
+import com.myproject.dto.request.PlantDetailRequest;
+import com.myproject.dto.request.PlantDetailUpdateRequest;
 import com.myproject.dto.request.PlantUpdateRequest;
+import com.myproject.dto.response.PlantDetailResponse;
 import com.myproject.dto.response.PlantPageResponse;
 import com.myproject.dto.response.PlantResponse;
 import com.myproject.exception.InvalidDataException;
 import com.myproject.exception.ResourceNotFoundException;
 import com.myproject.model.Plant;
 import com.myproject.repository.PlantRepository;
+import com.myproject.service.FileService;
 import com.myproject.service.PlantService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,6 +33,7 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor
 public class PlantServiceImpl implements PlantService {
     private final PlantRepository plantRepository;
+    private final FileService fileService;
 
     @Override
     public PlantPageResponse findAll(String keyword, String sort, int page, int size) {
@@ -86,6 +92,21 @@ public class PlantServiceImpl implements PlantService {
     }
 
     @Override
+    public PlantDetailResponse findDetailById(Long id) {
+        log.info("Find plant detail by id {}", id);
+
+        Plant plant = getPlantEntity(id);
+
+        return PlantDetailResponse.builder()
+                .plantId(id)
+                .tableData(plant.getTableData())
+                .careData(plant.getCareData())
+                .title(plant.getTitle())
+                .imageSource(plant.getImage())
+                .build();
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public long save(PlantCreationRequest req) {
         log.info("Save plant: {}", req);
@@ -102,6 +123,68 @@ public class PlantServiceImpl implements PlantService {
         Plant result = plantRepository.save(plant);
         log.info("Plant saved: {}", plant);
         return result.getId();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public long saveWithDetail(PlantDetailRequest req) {
+        log.info("Save plant with details: {}", req);
+
+        String plantName = req.getTableData().stream()
+                .filter(entry -> "Common Name".equals(entry.get("attribute")))
+                .findFirst()
+                .map(entry -> entry.get("value"))
+                .orElseThrow(() -> new IllegalArgumentException("Common Name not found in table data"));
+
+        Plant existingPlant = plantRepository.findByPlantName(plantName);
+        if (existingPlant != null) {
+            throw new InvalidDataException("Plant with this name already exists");
+        }
+
+        Plant plant = new Plant();
+        plant.setPlantName(plantName);
+        plant.setImage(req.getImageSource());
+        plant.setDescription(req.getIntroduction());
+        plant.setTableData(req.getTableData());
+        plant.setCareData(req.getCareData());
+        plant.setTitle(req.getTitle());
+
+        Plant result = plantRepository.save(plant);
+        log.info("Plant with details saved: {}", result);
+        return result.getId();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateWithDetail(PlantDetailUpdateRequest req) {
+        log.info("Update plant with details: {}", req);
+
+        Plant plant = getPlantEntity(req.getPlantId());
+
+        String plantName = req.getTableData().stream()
+                .filter(entry -> "Common Name".equals(entry.get("attribute")))
+                .findFirst()
+                .map(entry -> entry.get("value"))
+                .orElse(null);
+
+        if (plantName != null) {
+            plant.setPlantName(plantName);
+        }
+
+        if (req.getIntroduction() != null) {
+            plant.setDescription(req.getIntroduction());
+        }
+
+        if (req.getTableData() != null) {
+            plant.setTableData(req.getTableData());
+        }
+
+        if (req.getCareData() != null) {
+            plant.setCareData(req.getCareData());
+        }
+
+        plantRepository.save(plant);
+        log.info("Plant with details updated: {}", plant);
     }
 
     @Override
@@ -126,13 +209,21 @@ public class PlantServiceImpl implements PlantService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void delete(Long id) {
         log.info("Delete plant {}", id);
 
         Plant plant = getPlantEntity(id);
+
+        // Delete associated file if exists
+        try {
+            fileService.deleteFile(id);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         plantRepository.delete(plant);
         log.info("Plant deleted: {}", plant);
-
     }
 
     private Plant getPlantEntity(Long id) {

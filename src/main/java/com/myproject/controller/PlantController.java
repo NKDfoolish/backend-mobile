@@ -1,6 +1,8 @@
 package com.myproject.controller;
 
 import com.myproject.dto.request.PlantCreationRequest;
+import com.myproject.dto.request.PlantDetailRequest;
+import com.myproject.dto.request.PlantDetailUpdateRequest;
 import com.myproject.dto.request.PlantUpdateRequest;
 import com.myproject.dto.response.ApiResponse;
 import com.myproject.dto.response.PlantResponse;
@@ -15,6 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/plant")
@@ -56,6 +60,57 @@ public class PlantController {
                 .build();
     }
 
+
+    @Operation(summary = "Create plant with details", description = "API create new plant with detailed information")
+    @PostMapping("/detail/add")
+    public ApiResponse createPlantWithDetail(@RequestBody @Valid PlantDetailRequest req) {
+        log.info("Create plant with details {}", req);
+
+        return ApiResponse.builder()
+                .status(HttpStatus.CREATED.value())
+                .message("plant with details created")
+                .data(plantService.saveWithDetail(req))
+                .build();
+    }
+
+    @Operation(summary = "Update plant with details", description = "API update plant with detailed information")
+    @PutMapping("/detail/upd")
+    public ApiResponse updatePlantWithDetail(@RequestBody @Valid PlantDetailUpdateRequest req) {
+        log.info("Update plant with details {}", req);
+
+        plantService.updateWithDetail(req);
+
+        return ApiResponse.builder()
+                .status(HttpStatus.ACCEPTED.value())
+                .message("plant with details updated successfully")
+                .build();
+    }
+
+    @Operation(summary = "Delete plant", description = "API delete plant by id")
+    @DeleteMapping("/del/{plantId}")
+    public ApiResponse deletePlant(@PathVariable @Min(value = 1, message = "PlantId must be equal or greater than 1") Long plantId) throws IOException {
+        log.info("Delete plant {}", plantId);
+
+        plantService.delete(plantId);
+
+        return ApiResponse.builder()
+                .status(HttpStatus.RESET_CONTENT.value())
+                .message("plant deleted successfully")
+                .build();
+    }
+
+    @Operation(summary = "Get plant detail", description = "API retrieve plant with detailed information by id")
+    @GetMapping("/detail/{plantId}")
+    public ApiResponse getPlantDetailInfo(@PathVariable @Min(value = 1, message = "PlantId must be equal or greater than 1") Long plantId) {
+        log.info("Get plant detail information {}", plantId);
+
+        return ApiResponse.builder()
+                .status(HttpStatus.OK.value())
+                .message("plant detail")
+                .data(plantService.findDetailById(plantId))
+                .build();
+    }
+
     @Hidden
     @Operation(summary = "Create plant", description = "API create new plant")
     @PostMapping("/add")
@@ -83,17 +138,17 @@ public class PlantController {
                 .build();
     }
 
-    @Hidden
-    @Operation(summary = "Delete plant", description = "API delete plant by id")
-    @DeleteMapping("/del/{plantId}")
-    public ApiResponse deletePlant(@PathVariable @Min(value = 1, message = "PlantId must be equal or greater than 1") Long plantId) {
-        log.info("Delete plant {}", plantId);
-
-        plantService.delete(plantId);
-
-        return ApiResponse.builder()
-                .status(HttpStatus.RESET_CONTENT.value())
-                .message("plant deleted successfully")
-                .build();
-    }
+//    @Hidden
+//    @Operation(summary = "Delete plant", description = "API delete plant by id")
+//    @DeleteMapping("/del/{plantId}")
+//    public ApiResponse deletePlant(@PathVariable @Min(value = 1, message = "PlantId must be equal or greater than 1") Long plantId) {
+//        log.info("Delete plant {}", plantId);
+//
+//        plantService.delete(plantId);
+//
+//        return ApiResponse.builder()
+//                .status(HttpStatus.RESET_CONTENT.value())
+//                .message("plant deleted successfully")
+//                .build();
+//    }
 }

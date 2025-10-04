@@ -19,11 +19,12 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/plant/detail")
+@RequestMapping("/plant/detail-old")
 @Tag(name = "Plant Detail Controller", description = "Plant Detail Controller")
 @RequiredArgsConstructor
 @Slf4j(topic = "PLANT_DETAIL_CONTROLLER")
 @Validated
+@Hidden
 public class PlantDetailController {
 
     private final PlantDetailService plantDetailService;
