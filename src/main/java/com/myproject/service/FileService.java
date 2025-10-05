@@ -5,8 +5,6 @@ import com.cloudinary.utils.ObjectUtils;
 import com.myproject.dto.FileData;
 import com.myproject.exception.ResourceNotFoundException;
 import com.myproject.model.Plant;
-import com.myproject.model.PlantDetail;
-import com.myproject.repository.PlantDetailRepository;
 import com.myproject.repository.PlantRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

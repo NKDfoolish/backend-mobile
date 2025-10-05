@@ -99,6 +99,7 @@ public class PlantServiceImpl implements PlantService {
 
         return PlantDetailResponse.builder()
                 .plantId(id)
+                .description(plant.getDescription())
                 .tableData(plant.getTableData())
                 .careData(plant.getCareData())
                 .title(plant.getTitle())
@@ -144,7 +145,7 @@ public class PlantServiceImpl implements PlantService {
         Plant plant = new Plant();
         plant.setPlantName(plantName);
         plant.setImage(req.getImageSource());
-        plant.setDescription(req.getIntroduction());
+        plant.setDescription(req.getDescription());
         plant.setTableData(req.getTableData());
         plant.setCareData(req.getCareData());
         plant.setTitle(req.getTitle());
@@ -171,8 +172,8 @@ public class PlantServiceImpl implements PlantService {
             plant.setPlantName(plantName);
         }
 
-        if (req.getIntroduction() != null) {
-            plant.setDescription(req.getIntroduction());
+        if (req.getDescription() != null) {
+            plant.setDescription(req.getDescription());
         }
 
         if (req.getTableData() != null) {

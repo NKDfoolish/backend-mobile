@@ -14,7 +14,7 @@ public class PlantDetailUpdateRequest {
     @NotNull(message = "Plant ID is required")
     private Long plantId;
 
-    private String introduction;
+    private String description;
     private String imageSource;
     private List<Map<String, String>> tableData;
     private List<Map<String, String>> careData;

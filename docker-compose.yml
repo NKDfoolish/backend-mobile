@@ -15,20 +15,20 @@ services:
     networks:
       - default
 
-  mongodb:
-    image: mongo:latest
-    container_name: mongodb
-    restart: unless-stopped
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: khanhduy
-      MONGO_INITDB_ROOT_PASSWORD: khanhduy
-      MONGO_INITDB_DATABASE: plantdb
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongodb_data:/data/db
-    networks:
-      - default
+#  mongodb:
+#    image: mongo:latest
+#    container_name: mongodb
+#    restart: unless-stopped
+#    environment:
+#      MONGO_INITDB_ROOT_USERNAME: khanhduy
+#      MONGO_INITDB_ROOT_PASSWORD: khanhduy
+#      MONGO_INITDB_DATABASE: plantdb
+#    ports:
+#      - "27017:27017"
+#    volumes:
+#      - mongodb_data:/data/db
+#    networks:
+#      - default
 
   backend-service:
     container_name: smartgarden

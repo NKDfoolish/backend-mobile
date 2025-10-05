@@ -15,7 +15,7 @@ import java.util.Map;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PlantDetailResponse {
     private Long plantId;
-    private String introduction;
+    private String description;
     private String imageSource;
     private List<Map<String, String>> tableData;
     private List<Map<String, String>> careData;

@@ -11,7 +11,7 @@ import java.util.Map;
 @Setter
 @ToString
 public class PlantDetailRequest {
-    private String introduction;
+    private String description;
     private String imageSource;
     private List<Map<String, String>> tableData;
     private List<Map<String, String>> careData;
