@@ -25,6 +25,16 @@ spring:
     from-email: ${SENDGRID_FROM_EMAIL}
     template-id: ${SENDGRID_TEMPLATE_ID}
     verification-link: ${SENDGRID_VERIFICATION_LINK}
+  mqtt:
+    server: l21da1a1.ala.asia-southeast1.emqxsl.com
+    port: 8883
+    client-id: client
+    username: esp32_device
+    password: your_password_123
+    topic: smart_garden/data
+    auto-reconnect: true
+    connection-timeout: 30
+    keep-alive-interval: 60
 #  data:
 #    mongodb:
 #      uri: mongodb://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_HOST}:27017/${MONGO_DB}?authSource=admin
