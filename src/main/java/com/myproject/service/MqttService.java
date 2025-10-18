@@ -8,9 +8,7 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -153,9 +151,5 @@ public class MqttService {
         } catch (MqttException e) {
             logger.error("Error disconnecting MQTT client", e);
         }
-    }
-
-    public boolean isMqttEnabled() {
-        return mqttEnabled.get();
     }
 }
