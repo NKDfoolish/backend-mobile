@@ -31,7 +31,7 @@ spring:
     client-id: client
     username: esp32_device
     password: your_password_123
-    topic: smart_garden/data
+    topic: smart_garden/sensor
     auto-reconnect: true
     connection-timeout: 30
     keep-alive-interval: 60
