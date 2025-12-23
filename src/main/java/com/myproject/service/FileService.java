@@ -68,43 +68,8 @@ public class FileService {
         plant.setImage(secureUrl);
         plantRepository.save(plant);
 
-//        PlantDetail plantDetail = plantDetailRepository.findByPlantId(plantId)
-//                .orElseThrow(() -> new ResourceNotFoundException("Plant information not found with id: " + plantId));
-
-//        plantDetail.setImageSource(secureUrl);
-//        plantDetailRepository.save(plantDetail);
-
         return urlPrefix + plantId;
     }
-
-//    public FileData download(Long plantId) throws IOException {
-//        log.info("Downloading file for plant: {}", plantId);
-//
-//        Plant plant = plantRepository.findById(plantId)
-//                .orElseThrow(() -> new ResourceNotFoundException("Plant not found with id: " + plantId));
-//
-//        if (!StringUtils.hasText(plant.getImage())) {
-//            throw new ResourceNotFoundException("File not found for plant id: " + plantId);
-//        }
-//
-//        // The image field now contains the full Cloudinary URL
-//        String cloudinaryUrl = plant.getImage();
-//
-//        // Determine content type based on file extension
-//        String extension = cloudinaryUrl.substring(cloudinaryUrl.lastIndexOf(".") + 1);
-//        String contentType = extension != null && !extension.isEmpty()
-//                ? "image/" + extension.toLowerCase()
-//                : "application/octet-stream";
-//
-//        // Fetch file content with error handling
-//        try {
-//            byte[] data = new URL(cloudinaryUrl).openStream().readAllBytes();
-//            return new FileData(contentType, new ByteArrayResource(data));
-//        } catch (IOException e) {
-//            log.error("Failed to download file from Cloudinary: {}", cloudinaryUrl, e);
-//            throw new ResourceNotFoundException("Failed to download file for plant id: " + plantId);
-//        }
-//    }
 
     public FileData download(Long plantId) throws IOException {
         log.info("Downloading file for plant: {}", plantId);
@@ -199,11 +164,6 @@ public class FileService {
             // Xóa URL khỏi cơ sở dữ liệu
             plant.setImage(null);
             plantRepository.save(plant);
-
-//            PlantDetail plantDetail = plantDetailRepository.findByPlantId(plantId)
-//                    .orElseThrow(() -> new ResourceNotFoundException("Plant information not found with id: " + plantId));
-//            plantDetail.setImageSource(null);
-//            plantDetailRepository.save(plantDetail);
 
             log.info("Successfully deleted image for plant id: {}", plantId);
 

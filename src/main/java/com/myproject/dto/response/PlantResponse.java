@@ -11,7 +11,6 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PlantResponse implements Serializable {
     private Long id;
     private String plantName;

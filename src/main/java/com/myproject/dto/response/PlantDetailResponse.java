@@ -12,7 +12,6 @@ import java.util.Map;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PlantDetailResponse {
     private Long plantId;
     private String description;

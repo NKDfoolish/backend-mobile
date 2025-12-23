@@ -12,7 +12,6 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AreaResponse implements Serializable {
     private Integer id;
     private String areaName;
