@@ -1,6 +1,7 @@
 package com.myproject.service;
 
 import com.myproject.dto.request.ShareGardenRequest;
+import com.myproject.dto.response.SharedGardenDetailResponse;
 import com.myproject.dto.response.SharedGardenResponse;
 
 import java.util.List;
@@ -16,4 +17,6 @@ public interface GardenShareService {
     boolean hasViewPermission(Long userId, Integer gardenId);
 
     boolean hasControlPermission(Long userId, Integer gardenId);
+
+    public List<SharedGardenDetailResponse> getSharedGardenDetails(Long userId);
 }

@@ -1,7 +1,5 @@
 package com.myproject.dto.response;
 
-import com.myproject.common.GardenPermission;
-
 import java.time.LocalDateTime;
 
 public class SharedGardenResponse {

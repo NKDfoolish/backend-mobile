@@ -2,6 +2,7 @@ package com.myproject.controller;
 
 import com.myproject.dto.request.ShareGardenRequest;
 import com.myproject.dto.response.ApiResponse;
+import com.myproject.dto.response.SharedGardenDetailResponse;
 import com.myproject.dto.response.SharedGardenResponse;
 import com.myproject.model.UserEntity;
 import com.myproject.service.GardenShareService;
@@ -68,8 +69,8 @@ public class GardenShareController {
 
         log.info("Shared user info email: {}; id: {}", user.getEmail(), user.getId());
 
-        List<SharedGardenResponse> data =
-                gardenShareService.getSharedGardens(user.getId());
+        List<SharedGardenDetailResponse> data =
+                gardenShareService.getSharedGardenDetails(user.getId());
 
         return ApiResponse.builder()
                 .status(HttpStatus.OK.value())

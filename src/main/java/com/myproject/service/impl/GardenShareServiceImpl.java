@@ -2,16 +2,15 @@ package com.myproject.service.impl;
 
 import com.myproject.common.GardenPermission;
 import com.myproject.dto.request.ShareGardenRequest;
-import com.myproject.dto.response.SharedGardenResponse;
+import com.myproject.dto.response.*;
 import com.myproject.exception.ForBiddenException;
 import com.myproject.exception.InvalidDataException;
 import com.myproject.exception.ResourceNotFoundException;
 import com.myproject.model.Garden;
 import com.myproject.model.GardenShare;
 import com.myproject.model.UserEntity;
-import com.myproject.repository.GardenRepository;
-import com.myproject.repository.GardenShareRepository;
-import com.myproject.repository.UserRepository;
+import com.myproject.model.Vase;
+import com.myproject.repository.*;
 import com.myproject.service.GardenShareService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +28,8 @@ public class GardenShareServiceImpl implements GardenShareService {
     private final GardenShareRepository gardenShareRepository;
     private final GardenRepository gardenRepository;
     private final UserRepository userRepository;
+    private final AreaRepository areaRepository;
+    private final VaseRepository vaseRepository;
 
     // =========================
     // SHARE GARDEN
@@ -88,6 +89,75 @@ public class GardenShareServiceImpl implements GardenShareService {
                 ))
                 .toList();
     }
+
+    @Override
+    public List<SharedGardenDetailResponse> getSharedGardenDetails(Long userId) {
+
+        log.info("Get shared garden details for user {}", userId);
+
+        List<SharedGardenResponse> sharedGardens =
+                gardenShareRepository.findSharedGardens(userId);
+
+        return sharedGardens.stream().map(garden -> {
+
+            // 1️⃣ Lấy Area theo gardenId
+            List<AreaDetailResponse> areas =
+                    areaRepository.findByGardenId(garden.getGardenId())
+                            .stream()
+                            .map(area -> {
+
+                                // 2️⃣ Lấy Vase theo areaId
+                                List<VaseResponse> vases =
+                                        vaseRepository.findByAreaId(area.getId())
+                                                .stream()
+                                                .map(this::toVaseResponse)
+                                                .toList();
+
+                                return AreaDetailResponse.builder()
+                                        .id(area.getId())
+                                        .areaName(area.getAreaName())
+                                        .image(area.getImage())
+                                        .createdAt(area.getCreatedAt())
+                                        .updatedAt(area.getUpdatedAt())
+                                        .vases(vases)
+                                        .build();
+                            })
+                            .toList();
+
+            // 3️⃣ Ghép Garden + Area + Vase
+            return SharedGardenDetailResponse.builder()
+                    .gardenId(garden.getGardenId())
+                    .gardenName(garden.getGardenName())
+                    .ownerName(garden.getOwnerName())
+                    .permission(garden.getPermission())
+                    .sharedAt(garden.getSharedAt())
+                    .areas(areas)
+                    .build();
+
+        }).toList();
+    }
+
+    private VaseResponse toVaseResponse(Vase vase) {
+        return VaseResponse.builder()
+                .id(vase.getId())
+                .vaseName(vase.getVaseName())
+                .deviceId(vase.getDeviceId())
+                .createdAt(vase.getCreatedAt())
+                .updatedAt(vase.getUpdatedAt())
+                // plant (nếu có)
+                .plant(
+                        vase.getPlant() != null
+                                ? PlantResponse.builder()
+                                .id(vase.getPlant().getId())
+                                .plantName(vase.getPlant().getPlantName())
+                                .build()
+                                : null
+                )
+                // area (optional, thường FE không cần ở đây)
+                .build();
+    }
+
+
 
     // =========================
     // REVOKE SHARE

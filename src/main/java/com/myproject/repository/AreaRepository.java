@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -30,4 +31,12 @@ public interface AreaRepository extends JpaRepository<Area, Integer> {
     @Query(value = "select a from Area a join a.garden g " +
             "where g.user = :user")
     Set<Area> searchByUser(UserEntity user);
+
+    @Query("""
+    select a
+    from Area a
+    join a.garden g
+    where g.id = :gardenId
+""")
+    List<Area> findByGardenId(Integer gardenId);
 }
