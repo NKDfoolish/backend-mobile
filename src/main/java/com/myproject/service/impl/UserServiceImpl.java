@@ -314,4 +314,16 @@ public class UserServiceImpl implements UserService {
         response.setUsers(userList);
         return response;
     }
+
+    @Override
+    public Long findUserIdByUsername(String username) {
+        log.info("Find user id by username: {}", username);
+
+        UserEntity user = userRepository.findByUsername(username);
+        if (user == null) {
+            throw new ResourceNotFoundException("User not found with username: " + username);
+        }
+
+        return user.getId();
+    }
 }

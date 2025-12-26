@@ -150,4 +150,19 @@ public class UserController {
                 .message("user deleted successfully")
                 .build();
     }
+
+    @Operation(summary = "Get user ID by username", description = "API retrieve user ID by username")
+    @GetMapping("/contact-id")
+    @PreAuthorize("hasAnyAuthority('manager', 'admin', 'sysadmin')")
+    public ApiResponse getUserIdByUsername(@RequestParam String username) {
+        log.info("Get user ID by username: {}", username);
+
+        Long userId = userService.findUserIdByUsername(username);
+
+        return ApiResponse.builder()
+                .status(HttpStatus.OK.value())
+                .message("user ID retrieved successfully")
+                .data(userId)
+                .build();
+    }
 }

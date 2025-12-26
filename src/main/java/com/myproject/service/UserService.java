@@ -23,4 +23,6 @@ public interface UserService {
     void changePassword(UserPasswordRequest req);
 
     void delete(Long id);
+
+    Long findUserIdByUsername(String username);
 }
