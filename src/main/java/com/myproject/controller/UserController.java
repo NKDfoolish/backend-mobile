@@ -153,7 +153,6 @@ public class UserController {
 
     @Operation(summary = "Get user ID by username", description = "API retrieve user ID by username")
     @GetMapping("/contact-id")
-    @PreAuthorize("hasAnyAuthority('manager', 'admin', 'sysadmin')")
     public ApiResponse getUserIdByUsername(@RequestParam String username) {
         log.info("Get user ID by username: {}", username);
 
